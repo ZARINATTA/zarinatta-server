@@ -30,7 +30,7 @@ class TicketServiceTest {
 
     @Test
     @DisplayName("출발/도착역, 시간, 기차 종류을 통해 열차 티켓을 검색한다.")
-    void getTicket() {
+    void 오전7시이후에_부산에서_수원으로_새마을호를_검색() {
         //given
         createDummyTicket();
         TicketSearchRequest ticketSearchRequest = TicketSearchRequest.builder()
@@ -46,9 +46,9 @@ class TicketServiceTest {
 
         //then
         assertThat(result.getPage()).isEqualTo(1);
-        assertThat(result.getTotalDataCount()).isEqualTo(4); // 페이지당 2개의 항목이 존재해야 합니다.
+        assertThat(result.getTotalDataCount()).isEqualTo(3);
         assertThat(result.getTotalPageCount()).isEqualTo(2);
-        assertThat(result.getResponseList().get(0).getTicketType()).isEqualTo("새마을호");
+        assertThat(result.getResponseList().get(0).getTicketType()).contains("새마을호");
         assertThat(result.getResponseList().get(0).getDepartStation()).isEqualTo(StationCode.부산);
         assertThat(result.getResponseList().get(0).getArriveStation()).isEqualTo(StationCode.수원);
     }

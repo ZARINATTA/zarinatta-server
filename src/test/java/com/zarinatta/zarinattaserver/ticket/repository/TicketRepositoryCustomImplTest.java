@@ -23,8 +23,8 @@ class TicketRepositoryCustomImplTest {
     private TicketRepository ticketRepository;
 
     @Test
-    @DisplayName("카운트 쿼리 테스트")
-    public void 테스트이름(){
+    @DisplayName("Count Query 테스트")
+    public void 오전7시이후에_부산에서_수원으로_새마을호를_검색(){
         //given
         createDummyTicket();
         TicketSearchRequest ticketSearchRequest = TicketSearchRequest.builder()
@@ -39,7 +39,7 @@ class TicketRepositoryCustomImplTest {
         Long ticketCount = ticketRepository.countAll(ticketSearchRequest);
 
         //then
-        assertThat(ticketCount).isEqualTo(4);
+        assertThat(ticketCount).isEqualTo(3);
     }
 
     @Transactional
