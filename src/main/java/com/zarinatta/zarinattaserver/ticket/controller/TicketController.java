@@ -20,7 +20,7 @@ public class TicketController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public PageTicketResponse searchTicket(@ModelAttribute @Valid TicketSearchRequest ticketSearchRequest, Pageable pageable) {
+    public PageTicketResponse searchTicket(@Valid TicketSearchRequest ticketSearchRequest, Pageable pageable) {
         return ticketService.getTicket(ticketSearchRequest, pageable);
     }
 }
