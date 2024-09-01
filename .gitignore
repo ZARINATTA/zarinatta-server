@@ -38,5 +38,5 @@ out/
 
 ### custom ###
 application.properties
-*.yml
+src/*.yml
 generated/*
