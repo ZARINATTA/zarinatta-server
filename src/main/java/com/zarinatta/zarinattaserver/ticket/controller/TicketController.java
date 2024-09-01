@@ -1,0 +1,26 @@
+package com.zarinatta.zarinattaserver.ticket.controller;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import com.zarinatta.zarinattaserver.ticket.controller.dto.request.TicketSearchRequest;
+import com.zarinatta.zarinattaserver.ticket.controller.dto.response.PageTicketResponse;
+import com.zarinatta.zarinattaserver.ticket.service.TicketService;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/v1/ticket")
+@RequiredArgsConstructor
+public class TicketController {
+
+    private final TicketService ticketService;
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public PageTicketResponse searchTicket(@ModelAttribute @Valid TicketSearchRequest ticketSearchRequest, Pageable pageable) {
+        return ticketService.getTicket(ticketSearchRequest, pageable);
+    }
+}

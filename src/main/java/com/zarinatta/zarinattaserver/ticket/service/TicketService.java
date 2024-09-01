@@ -1,0 +1,38 @@
+package com.zarinatta.zarinattaserver.ticket.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.zarinatta.zarinattaserver.entity.Ticket;
+import com.zarinatta.zarinattaserver.ticket.controller.dto.request.TicketSearchRequest;
+import com.zarinatta.zarinattaserver.ticket.controller.dto.response.PageTicketResponse;
+import com.zarinatta.zarinattaserver.ticket.controller.dto.response.TicketSearchResponse;
+import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class TicketService {
+
+    private final TicketRepository ticketRepository;
+
+    public PageTicketResponse getTicket(TicketSearchRequest searchRequest, Pageable pageable) {
+        Page<Ticket> ticketBySearchDTO = ticketRepository.findTicketBySearchDTO(searchRequest, pageable);
+        List<TicketSearchResponse> content = ticketBySearchDTO.getContent().stream()
+                .map(TicketSearchResponse::fromEntity)
+                .collect(Collectors.toList());
+        return PageTicketResponse.builder()
+                .responseList(content)
+                .page(ticketBySearchDTO.getNumber() + 1)
+                .totalDataCount(ticketBySearchDTO.getTotalElements())
+                .totalPageCount(ticketBySearchDTO.getTotalPages())
+                .build();
+    }
+}
