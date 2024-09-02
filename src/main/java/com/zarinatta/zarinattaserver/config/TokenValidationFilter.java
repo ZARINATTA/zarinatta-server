@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class TokenValidationFilter implements Filter {
 
     private final JwtService jwtService;
     private List<String> excludeUrls = new ArrayList<>();
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -31,9 +33,11 @@ public class TokenValidationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        if(excludeUrls.contains(httpRequest.getRequestURI())) {
-            chain.doFilter(request, response);
-            return;
+        for (String excludeUrl : excludeUrls) {
+            if (pathMatcher.match(excludeUrl, httpRequest.getRequestURI())) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
 
         // 쿠키에서 accessToken 가져오기
