@@ -58,4 +58,5 @@ jobs:
             sudo docker stop ${{ secrets.DOCKERHUB_IMAGE_NAME }} || true
             sudo docker rm ${{ secrets.DOCKERHUB_IMAGE_NAME }} || true
             sudo docker run -d --name ${{ secrets.DOCKERHUB_IMAGE_NAME }} -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
+            docker system prune -a --volumes -f
             echo "끝"
