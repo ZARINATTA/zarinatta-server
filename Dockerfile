@@ -13,5 +13,5 @@ COPY ${JAR_FILE} app.jar
 # 해당 포트를 외부로 개방
 EXPOSE 8080
 
-# 실행 명령어
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# 실행 명령어에 JVM 옵션 추가
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar"]
