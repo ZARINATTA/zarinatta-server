@@ -1,12 +1,10 @@
 package com.zarinatta.zarinattaserver.ticket.controller.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import com.zarinatta.zarinattaserver.enums.StationCode;
 
-@Getter
+@Data
 @NoArgsConstructor
 public class TicketSearchRequest {
     @NotNull
