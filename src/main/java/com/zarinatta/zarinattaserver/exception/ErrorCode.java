@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
+    // 400
+    INVALID_REQUEST_ERROR("G-003", HttpStatus.BAD_REQUEST, "INVALID_REQUEST"),
 
     // 401
     INVALID_TOKEN_ERROR("G-001", HttpStatus.UNAUTHORIZED, "TOKEN_INVALID"),
