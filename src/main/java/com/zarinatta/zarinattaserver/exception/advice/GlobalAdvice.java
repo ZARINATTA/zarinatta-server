@@ -5,14 +5,11 @@ import com.zarinatta.zarinattaserver.exception.ErrorResponse;
 import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.net.BindException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +43,6 @@ public class GlobalAdvice {
     @ExceptionHandler(ZarinattaException.class)
     public ResponseEntity ZarinattaExceptionHandler(ZarinattaException e) {
         return ResponseEntity
-                .status(e.getExceptionType().getHttpStatus())
-                .body(ErrorResponse.of(e.getExceptionType(), null));
+                .status(e.getExceptionType().getHttpStatus()).body(ErrorResponse.of(e.getExceptionType(), null));
     }
 }
