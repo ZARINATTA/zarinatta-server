@@ -19,7 +19,8 @@ public class StationService {
             .toList();
 
     public List<String> searchKeyword(String keyword) {
-        log.debug(entireStations.get(0));
+        log.info("[--- keyword: "+keyword+" ----]");
+        log.info("[--- list 1nd value: "+entireStations.get(0)+" ---]");
         return entireStations.stream().filter(name -> name.contains(keyword)).toList();
     }
 }
