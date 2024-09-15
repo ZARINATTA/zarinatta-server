@@ -1,7 +1,7 @@
 package com.zarinatta.zarinattaserver.config;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
-import com.zarinatta.zarinattaserver.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;

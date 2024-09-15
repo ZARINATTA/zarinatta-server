@@ -1,6 +1,6 @@
 package com.zarinatta.zarinattaserver.user.controller;
 
-import com.zarinatta.zarinattaserver.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
 import com.zarinatta.zarinattaserver.user.dto.UserInputDto;
 import com.zarinatta.zarinattaserver.user.service.UserService;
 import com.zarinatta.zarinattaserver.user.dto.UserUpdateDto;

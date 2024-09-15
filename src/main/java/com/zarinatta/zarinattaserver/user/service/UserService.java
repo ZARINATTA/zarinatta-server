@@ -2,8 +2,8 @@ package com.zarinatta.zarinattaserver.user.service;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
 import com.zarinatta.zarinattaserver.entity.User;
-import com.zarinatta.zarinattaserver.exception.ZarinattaException;
-import com.zarinatta.zarinattaserver.exception.ZarinattaExceptionType;
+import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.exception.ErrorCode;
 import com.zarinatta.zarinattaserver.user.dto.UserInputDto;
 import com.zarinatta.zarinattaserver.user.repository.UserRepository;
 import com.zarinatta.zarinattaserver.user.dto.UserUpdateDto;
@@ -34,7 +34,7 @@ public class UserService {
         String userId = jwtService.decodeAccessToken(accessToken);
 
         if(userId == null) {
-            throw new ZarinattaException(ZarinattaExceptionType.INVALID_TOKEN_ERROR);
+            throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
         }
 
         userRepository.update(userId, userUpdateDto.getUserDeviceToken(), userUpdateDto.getUserPhone());
