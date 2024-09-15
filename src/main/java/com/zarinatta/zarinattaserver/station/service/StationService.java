@@ -19,6 +19,7 @@ public class StationService {
             .toList();
 
     public List<String> searchKeyword(String keyword) {
+        log.debug(entireStations.get(0));
         return entireStations.stream().filter(name -> name.contains(keyword)).toList();
     }
 }
