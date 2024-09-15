@@ -1,5 +1,6 @@
 package com.zarinatta.zarinattaserver.ticket.controller.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import com.zarinatta.zarinattaserver.enums.StationCode;
@@ -7,11 +8,13 @@ import com.zarinatta.zarinattaserver.enums.StationCode;
 @Data
 @NoArgsConstructor
 public class TicketSearchRequest {
-    @NotNull
+    @NotNull(message = "출발역 입력 필수")
     private StationCode departStation;
-    @NotNull
+    @NotNull(message = "도착역 입력 필수")
     private StationCode arriveStation;
+    @NotBlank(message = "출발 날짜 입력 필수")
     private String departDate;
+    @NotBlank(message = "출발 시간 입력 필수")
     private String departTime;
     private String trainType;
 

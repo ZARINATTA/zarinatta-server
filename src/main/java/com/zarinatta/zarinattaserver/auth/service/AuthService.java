@@ -7,8 +7,8 @@ import com.zarinatta.zarinattaserver.auth.dto.LoginDto;
 import com.zarinatta.zarinattaserver.auth.dto.RedirectDto;
 import com.zarinatta.zarinattaserver.auth.dto.TokenResponseDto;
 import com.zarinatta.zarinattaserver.config.RedisService;
-import com.zarinatta.zarinattaserver.exception.ZarinattaException;
-import com.zarinatta.zarinattaserver.exception.ZarinattaExceptionType;
+import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.exception.ErrorCode;
 import com.zarinatta.zarinattaserver.user.dto.UserInputDto;
 import com.zarinatta.zarinattaserver.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -111,7 +111,7 @@ public class AuthService {
             log.error("[AuthService-sinup2] : LoginDto get error");
             System.out.println(response.statusCode());
             System.out.println(response.body().toString());
-            throw new ZarinattaException(ZarinattaExceptionType.KAKAO_SERVER_ERROR);
+            throw new ZarinattaException(ErrorCode.KAKAO_SERVER_ERROR);
         }
 
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -133,7 +133,7 @@ public class AuthService {
 
         // 상태 코드 검사 및 에러 처리
         if (userInfoResponse.statusCode() >= 400) {
-            throw new ZarinattaException(ZarinattaExceptionType.KAKAO_SERVER_ERROR);
+            throw new ZarinattaException(ErrorCode.KAKAO_SERVER_ERROR);
         }
 
         KakaoProfileDto kakaoProfileDto = objectMapper.readValue(userInfoResponse.body(), KakaoProfileDto.class);
@@ -146,7 +146,7 @@ public class AuthService {
         String userId = userService.findUserIdByEmail(email);
 
         if (userId != null) {
-            throw new ZarinattaException(ZarinattaExceptionType.INVALID_TOKEN_ERROR);
+            throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
         }
 
         String newUserId = userService.save(UserInputDto.builder()
@@ -229,14 +229,14 @@ public class AuthService {
     public TokenResponseDto login(String accessToken, String refreshToken) throws ZarinattaException {
         if(!jwtService.isValidToken(accessToken)) {
             if(redisService.getValue(refreshToken).isEmpty()) {
-                throw new ZarinattaException(ZarinattaExceptionType.INVALID_TOKEN_ERROR);
+                throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
             }
         }
 
         String userId = jwtService.decodeAccessToken(accessToken);
 
         if(userId == null) {
-            throw new ZarinattaException(ZarinattaExceptionType.INVALID_TOKEN_ERROR);
+            throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
         }
 
         String newAccessToken = jwtService.createAccessToken(userId);
@@ -253,7 +253,7 @@ public class AuthService {
 
         if(userId == null) {
             this.logout(accessToken);
-            throw new ZarinattaException(ZarinattaExceptionType.EXPIRED_TOKEN_ERROR);
+            throw new ZarinattaException(ErrorCode.EXPIRED_TOKEN_ERROR);
         }
 
         String newAccessToken = jwtService.createAccessToken(userId);
@@ -269,7 +269,7 @@ public class AuthService {
         String userId = jwtService.decodeAccessToken(accessToken);
 
         if(userId == null) {
-            throw new ZarinattaException(ZarinattaExceptionType.INVALID_TOKEN_ERROR);
+            throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
         }
 
         redisService.deleteValue(userId);
@@ -279,9 +279,9 @@ public class AuthService {
         if (response.statusCode() == 302) {
             HttpHeaders headers = response.headers();
             return headers.firstValue("Location").orElseThrow(() ->
-                    new ZarinattaException(ZarinattaExceptionType.AUTH_SERVER_ERROR));
+                    new ZarinattaException(ErrorCode.AUTH_SERVER_ERROR));
         }
 
-        throw new ZarinattaException(ZarinattaExceptionType.AUTH_SERVER_ERROR);
+        throw new ZarinattaException(ErrorCode.AUTH_SERVER_ERROR);
     }
 }

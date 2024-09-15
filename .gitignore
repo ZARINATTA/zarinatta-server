@@ -39,4 +39,4 @@ out/
 ### custom ###
 application.properties
 src/**/*.yml
-generated/*
+generated/

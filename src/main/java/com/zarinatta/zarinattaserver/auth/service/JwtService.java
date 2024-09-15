@@ -1,7 +1,7 @@
 package com.zarinatta.zarinattaserver.auth.service;
 
-import com.zarinatta.zarinattaserver.exception.ZarinattaException;
-import com.zarinatta.zarinattaserver.exception.ZarinattaExceptionType;
+import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ public class JwtService {
 
             return claims.getSubject() != null ? claims.getSubject() :  null;
         } catch (ExpiredJwtException e) {
-            throw new ZarinattaException(ZarinattaExceptionType.EXPIRED_TOKEN_ERROR);
+            throw new ZarinattaException(ErrorCode.EXPIRED_TOKEN_ERROR);
         }
     }
 
