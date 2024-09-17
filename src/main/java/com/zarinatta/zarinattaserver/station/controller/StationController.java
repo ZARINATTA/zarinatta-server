@@ -1,5 +1,6 @@
 package com.zarinatta.zarinattaserver.station.controller;
 
+import com.zarinatta.zarinattaserver.station.controller.response.FrequentStationDto;
 import com.zarinatta.zarinattaserver.station.service.StationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,12 @@ public class StationController {
     @ResponseStatus(HttpStatus.OK)
     public Map<String, List<String>> searchTicket(@RequestParam("keyword") String keyword) {
         return Map.of("stations", stationService.searchKeyword(keyword));
+    }
+
+    @GetMapping("/frequent")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, List<FrequentStationDto>> findStations() {
+        return Map.of("stations", stationService.findStationsByCount());
     }
 }
 
