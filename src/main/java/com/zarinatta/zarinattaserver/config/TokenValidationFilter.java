@@ -31,6 +31,9 @@ public class TokenValidationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        httpRequest.setCharacterEncoding("UTF-8");
+        httpResponse.setCharacterEncoding("UTF-8");
+
         if(httpRequest.getRequestURI().contains("/api/v1/ticket")) {
             chain.doFilter(httpRequest, httpResponse);
             return;
