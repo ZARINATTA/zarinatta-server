@@ -14,16 +14,17 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
-    @GetMapping("/auth/redirect")
+    @GetMapping("/redirect")
     public ResponseEntity<RedirectDto> redirect() throws IOException, InterruptedException {
         return new ResponseEntity<>(authService.redirect2(), HttpStatusCode.valueOf(302));
     }
 
-    @GetMapping("/auth/signup")
+    @GetMapping("/signup")
     public ResponseEntity<Map<String, String>> signup(@RequestParam String code) throws Exception {
         TokenResponseDto tokenResponseDto = authService.signup2(code);
 
@@ -40,7 +41,7 @@ public class AuthController {
                 .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
     }
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(HttpServletRequest request, @RequestBody Map<String, String> map) throws Exception {
         String accessToken = (String) request.getAttribute("accessToken");
         String refreshToken = map.get("refreshToken");
@@ -60,7 +61,7 @@ public class AuthController {
                 .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
     }
 
-    @PostMapping("/auth/authorize")
+    @PostMapping("/authorize")
     public ResponseEntity<Map<String, String>> authorize(HttpServletRequest request, @RequestBody Map<String, String> map) throws Exception {
         String accessToken = (String) request.getAttribute("accessToken");
         String refreshToken = map.get("refreshToken");
@@ -80,7 +81,7 @@ public class AuthController {
                 .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
     }
 
-    @PostMapping("/auth/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = (String) request.getAttribute("accessToken");
 
