@@ -17,7 +17,8 @@ public class Station {
     private Long id;
 
     @Column(name="station_section")
-    private String section;
+    @Enumerated(EnumType.STRING)
+    private StationSection section;
 
     @Column(name = "station_name")
     private String name;

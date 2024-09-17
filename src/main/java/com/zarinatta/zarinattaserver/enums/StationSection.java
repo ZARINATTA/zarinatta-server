@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum StationSection {
-    SEOUL_GYEONGGI("서울_경기"),
-    DAEJEON_CHUNGCHEONG("대전_충청"),
-    GYEONGSANG("경상_부산_대구"),
-    GANGWON("강원"),
-    JEOLLA("전라_광주");
+    서울_경기("SEOUL_GYEONGGI"),
+    대전_충청("DAEJEON_CHUNGCHEONG"),
+    경상_부산_대구("GYEONGSANG"),
+    강원("GANGWON"),
+    전라_광주("JEOLLA");
 
-    private final String koreaName;
+    private final String englishName;
 }
