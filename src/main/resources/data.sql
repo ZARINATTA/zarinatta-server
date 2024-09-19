@@ -1,8 +1,8 @@
 -- User 데이터 삽입
-INSERT INTO USERS (USER_EMAIL, USER_NICK, USER_PHONE, USER_DEVICE_TOKEN) VALUES
-                                                                                      ('user1@example.com', 'UserOne', '010-1234-5678', 'device_token_1'),
-                                                                                      ('user2@example.com', 'UserTwo', '010-2345-6789', 'device_token_2'),
-                                                                                      ('user3@example.com', 'UserThree', '010-3456-7890', 'device_token_3');
+INSERT INTO USERS (USER_ID, USER_EMAIL, USER_NICK, USER_PHONE, USER_DEVICE_TOKEN) VALUES
+                                                                                      ('199d769b-5fa5-4a9f-9334-45ba07e6a8e7', 'user1@example.com', 'UserOne', '010-1234-5678', 'device_token_1'),
+                                                                                      ('336d0688-b24c-4d57-abef-f282c2c95026', 'user2@example.com', 'UserTwo', '010-2345-6789', 'device_token_2'),
+                                                                                      ('dfc8c07e-dcc0-464e-98af-5295c19c3e0a', 'user3@example.com', 'UserThree', '010-3456-7890', 'device_token_3');
 
 
 -- Ticket 데이터 삽입
