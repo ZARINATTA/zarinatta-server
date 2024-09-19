@@ -1,4 +1,4 @@
-package com.zarinatta.zarinattaserver.ticket.controller.dto.response;
+package com.zarinatta.zarinattaserver.ticket.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

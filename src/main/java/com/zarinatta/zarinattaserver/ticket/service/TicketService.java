@@ -8,13 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zarinatta.zarinattaserver.entity.Ticket;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.request.TicketSearchRequest;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.response.PageTicketResponse;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.response.TicketSearchResponse;
+import com.zarinatta.zarinattaserver.ticket.dto.request.TicketSearchRequest;
+import com.zarinatta.zarinattaserver.ticket.dto.response.PageTicketResponse;
+import com.zarinatta.zarinattaserver.ticket.dto.response.TicketSearchResponse;
 import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.List;
 import java.util.stream.Collectors;
 

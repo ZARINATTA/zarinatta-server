@@ -10,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.enums.StationCode;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.request.TicketSearchRequest;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.response.PageTicketResponse;
+import com.zarinatta.zarinattaserver.ticket.dto.request.TicketSearchRequest;
+import com.zarinatta.zarinattaserver.ticket.dto.response.PageTicketResponse;
 import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 
 import java.util.Arrays;

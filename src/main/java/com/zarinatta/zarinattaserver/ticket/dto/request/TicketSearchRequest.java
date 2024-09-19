@@ -1,4 +1,4 @@
-package com.zarinatta.zarinattaserver.ticket.controller.dto.request;
+package com.zarinatta.zarinattaserver.ticket.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
