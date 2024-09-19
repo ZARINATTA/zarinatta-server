@@ -1,18 +1,23 @@
 package com.zarinatta.zarinattaserver.auth.service;
 
-import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.ErrorCode;
+import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
+import com.zarinatta.zarinattaserver.user.repository.UserRepository;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret}") // application.properties 등에 보관한다.
@@ -21,6 +26,8 @@ public class JwtService {
     private final static long ACCESS_TIME = 30 * 60 * 1000L; //30분
 
     private final static long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L; //7일
+
+    private final UserRepository userRepository;
 
     // 객체 초기화, secretKey를 Base64로 인코딩
     @PostConstruct
@@ -82,4 +89,32 @@ public class JwtService {
         }
     }
 
+    /**
+     * 토큰에서 userId 추출
+     */
+    public Long findUserIdByToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.get("userId", Long.class);
+        } catch (ExpiredJwtException e) {
+            throw new ZarinattaException(ErrorCode.EXPIRED_TOKEN_ERROR);
+        }
+    }
+
+    public Optional<User> findUserByToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+            Long userId = claims.get("userId", Long.class);
+            return userRepository.findById(String.valueOf(userId));
+        } catch (ExpiredJwtException e) {
+            throw new ZarinattaException(ErrorCode.EXPIRED_TOKEN_ERROR);
+        }
+    }
 }
