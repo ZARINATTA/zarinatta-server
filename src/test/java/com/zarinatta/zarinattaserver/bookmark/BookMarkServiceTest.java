@@ -6,8 +6,10 @@ import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import com.zarinatta.zarinattaserver.enums.StationCode;
+import com.zarinatta.zarinattaserver.exception.exception.NotPermit.BookMarkPermitException;
 import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 import com.zarinatta.zarinattaserver.user.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Profile("test")
@@ -32,6 +36,13 @@ class BookMarkServiceTest {
     private TicketRepository ticketRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @AfterEach
+    void tearDown() {
+        bookMarkRepository.deleteAll();
+        ticketRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("기차표를 즐겨찾기에 등록한다.")
@@ -60,6 +71,39 @@ class BookMarkServiceTest {
         assertEquals(bookMark.isWantWaitingReservation(), true);
     }
 
+    @Test
+    @DisplayName("등록된 즐겨찾기를 삭제한다.")
+    public void ID가1인유저가_ID가2인_본인즐겨찾기_삭제(){
+        //given
+        createDummyData();
+
+        //when
+        bookMarkService.deleteBookMark(userRepository.findById("1").get(), 2L);
+
+        //then
+        List<BookMark> bookMarks = bookMarkRepository.findAll();
+        assertThat(bookMarks.size()).isEqualTo(2);
+        assertThat(bookMarks.get(0).getTicket().getId()).isEqualTo(1L);
+        assertThat(bookMarks.get(1).getTicket().getId()).isEqualTo(3L);
+    }
+
+    @Test
+    @DisplayName("자기 자신의 즐겨찾기만 삭제 할수 있다.")
+    public void ID가2인유저가_ID가2인_다른유저의_즐겨찾기_삭제(){
+        //given
+        createDummyData();
+
+        //when //then
+        assertThrows(BookMarkPermitException.class,
+                () -> bookMarkService.deleteBookMark(userRepository.findById("2").get(), 2L));
+    }
+
+    void createDummyData() {
+        createDummyTicket();
+        createDummyUser();
+        createDummyBookMark();
+    }
+
     @Transactional
     void createDummyTicket() {
         List<Ticket> tickets = Arrays.asList(
@@ -79,11 +123,50 @@ class BookMarkServiceTest {
 
     @Transactional
     void createDummyUser() {
-        User user = User.builder()
+        List<User> users = List.of(
+                User.builder()
                 .id("1")
                 .userNick("test")
                 .userEmail("ee@gmail.com")
-                .build();
-        userRepository.save(user);
+                .build(),
+                User.builder()
+                .id("2")
+                .userNick("test2")
+                .userEmail("ee2@gmail.com")
+                .build());
+        userRepository.saveAll(users);
+    }
+
+    @Transactional
+    void createDummyBookMark() {
+        User user = userRepository.findById("1").get();
+        List<Ticket> tickets = ticketRepository.findAll();
+        List<BookMark> bookMarks = Arrays.asList(
+                BookMark.builder()
+                        .wantFirstClass(true)
+                        .wantNormalSeat(SeatLookingFor.SEAT)
+                        .wantBabySeat(SeatLookingFor.SEAT)
+                        .wantWaitingReservation(false)
+                        .ticket(tickets.get(0))
+                        .user(user)
+                        .build(),
+                BookMark.builder()
+                        .wantFirstClass(false)
+                        .wantNormalSeat(SeatLookingFor.SEAT)
+                        .wantBabySeat(SeatLookingFor.SEAT)
+                        .wantWaitingReservation(true)
+                        .ticket(tickets.get(1))
+                        .user(user)
+                        .build(),
+                BookMark.builder()
+                        .wantFirstClass(true)
+                        .wantNormalSeat(SeatLookingFor.SEAT)
+                        .wantBabySeat(SeatLookingFor.SEAT)
+                        .wantWaitingReservation(true)
+                        .ticket(tickets.get(2))
+                        .user(user)
+                        .build()
+        );
+        bookMarkRepository.saveAll(bookMarks);
     }
 }

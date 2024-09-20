@@ -1,5 +1,11 @@
 package com.zarinatta.zarinattaserver.bookmark;
 
+import com.zarinatta.zarinattaserver.entity.BookMark;
+import com.zarinatta.zarinattaserver.entity.Ticket;
+import com.zarinatta.zarinattaserver.entity.User;
+import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
+import com.zarinatta.zarinattaserver.enums.StationCode;
+import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 import com.zarinatta.zarinattaserver.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -7,14 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Profile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import com.zarinatta.zarinattaserver.entity.BookMark;
-import com.zarinatta.zarinattaserver.entity.Ticket;
-import com.zarinatta.zarinattaserver.entity.User;
-import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
-import com.zarinatta.zarinattaserver.enums.StationCode;
-import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +32,7 @@ class BookMarkRepositoryTest {
     @DisplayName("티켓 Id List와 User Entity를 통해 티켓 id 중에 즐겨 찾기 한 항목을 가져 온다.")
     public void getBookMarks() {
         //given
-        creteDummyData();
+        createDummyData();
 
         //when
         List<BookMark> bookMarks = bookMarkRepository.findAllByTicketIdInAndUserId(Arrays.asList(1L, 2L, 3L), userRepository.findById("1").get());
@@ -43,7 +42,7 @@ class BookMarkRepositoryTest {
         Assertions.assertEquals(bookMarks.get(0).getTicket().getId(), 1L);
     }
 
-    void creteDummyData() {
+    void createDummyData() {
         createDummyTicket();
         createDummyUser();
         createDummyBookMark();
