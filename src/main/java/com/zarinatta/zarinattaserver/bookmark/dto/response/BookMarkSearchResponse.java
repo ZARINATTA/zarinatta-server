@@ -1,4 +1,4 @@
-package com.zarinatta.zarinattaserver.bookmark;
+package com.zarinatta.zarinattaserver.bookmark.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

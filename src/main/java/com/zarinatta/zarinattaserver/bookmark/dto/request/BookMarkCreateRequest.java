@@ -1,4 +1,4 @@
-package com.zarinatta.zarinattaserver.bookmark.dto;
+package com.zarinatta.zarinattaserver.bookmark.dto.request;
 
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import jakarta.validation.constraints.NotNull;

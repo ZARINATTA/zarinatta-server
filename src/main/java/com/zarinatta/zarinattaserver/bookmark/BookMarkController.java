@@ -1,7 +1,8 @@
 package com.zarinatta.zarinattaserver.bookmark;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
-import com.zarinatta.zarinattaserver.bookmark.dto.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.response.BookMarkSearchResponse;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.UserNotFoundException;

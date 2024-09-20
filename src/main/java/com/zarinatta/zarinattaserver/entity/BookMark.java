@@ -1,6 +1,6 @@
 package com.zarinatta.zarinattaserver.entity;
 
-import com.zarinatta.zarinattaserver.bookmark.dto.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
