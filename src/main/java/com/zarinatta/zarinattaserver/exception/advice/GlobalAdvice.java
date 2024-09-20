@@ -2,6 +2,7 @@ package com.zarinatta.zarinattaserver.exception.advice;
 
 import com.zarinatta.zarinattaserver.exception.ErrorCode;
 import com.zarinatta.zarinattaserver.exception.ErrorResponse;
+import com.zarinatta.zarinattaserver.exception.exception.NotFound.NotFoundException;
 import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,14 @@ public class GlobalAdvice {
     @ExceptionHandler(ZarinattaException.class)
     public ResponseEntity ZarinattaExceptionHandler(ZarinattaException e) {
         return ResponseEntity
-                .status(e.getExceptionType().getHttpStatus()).body(ErrorResponse.of(e.getExceptionType(), null));
+                .status(e.getExceptionType().getHttpStatus())
+                .body(ErrorResponse.of(e.getExceptionType()));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity UserNotFoundExceptionHandler(NotFoundException e) {
+        return ResponseEntity
+                .status(e.getExceptionType().getHttpStatus())
+                .body(ErrorResponse.of(e.getExceptionType(), e.getMethod()));
     }
 }
