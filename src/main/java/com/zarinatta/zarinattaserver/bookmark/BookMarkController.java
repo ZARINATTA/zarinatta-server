@@ -37,9 +37,10 @@ public class BookMarkController {
     }
 
     @PostMapping("/create")
-    public void createBookMark(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @RequestBody @Valid BookMarkCreateRequest bookMarkCreateRequest) {
+    public String createBookMark(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @RequestBody @Valid BookMarkCreateRequest bookMarkCreateRequest) {
         User user = jwtService.findUserByToken(authorizationHeader)
                 .orElseThrow(() -> new UserNotFoundException("메서드 : createBookMark"));
         bookMarkService.createBookMark(user, bookMarkCreateRequest);
+        return "TicketId: " + bookMarkCreateRequest.getTicketId() + " - 즐겨찾기 추가 완료";
     }
 }
