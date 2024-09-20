@@ -2,6 +2,7 @@ package com.zarinatta.zarinattaserver.bookmark.dto;
 
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +20,13 @@ public class BookMarkCreateRequest {
     private SeatLookingFor wantBabySeat;
     @NotNull(message = "예약 대기 즐겨찾기 여부는 필수입니다.")
     private Boolean wantWaitingReservation;
+
+    @Builder
+    public BookMarkCreateRequest(Long ticketId, Boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, Boolean wantWaitingReservation) {
+        this.ticketId = ticketId;
+        this.wantFirstClass = wantFirstClass;
+        this.wantNormalSeat = wantNormalSeat;
+        this.wantBabySeat = wantBabySeat;
+        this.wantWaitingReservation = wantWaitingReservation;
+    }
 }
