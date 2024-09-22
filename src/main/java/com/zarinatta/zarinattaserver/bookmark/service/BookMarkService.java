@@ -1,6 +1,10 @@
-package com.zarinatta.zarinattaserver.bookmark;
+package com.zarinatta.zarinattaserver.bookmark.service;
 
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkPageResponse;
+import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkResponse;
+import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
@@ -10,8 +14,12 @@ import com.zarinatta.zarinattaserver.exception.exception.NotPermit.BookMarkPermi
 import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,5 +46,19 @@ public class BookMarkService {
             throw new BookMarkPermitException("deleteBookMark", "userID : " + user.getId() + " - bookMarkID : " + bookMark.getId() + " 삭제 불가");
         }
         bookMarkRepository.delete(bookMark);
+    }
+
+    public MyBookMarkPageResponse getMyBookMark(User user, MyBookMarkRequest myBookMarkRequest) {
+        Page<BookMark> myBookMarkByRequest = bookMarkRepository.findMyBookMarkByRequest(user, myBookMarkRequest);
+        List<MyBookMarkResponse> content = myBookMarkByRequest.getContent().stream()
+                .map(MyBookMarkResponse::from)
+                .collect(Collectors.toList());
+
+        return MyBookMarkPageResponse.builder()
+                .responseList(content)
+                .page(myBookMarkByRequest.getNumber() + 1)
+                .totalDataCount(myBookMarkByRequest.getTotalElements())
+                .totalPageCount(myBookMarkByRequest.getTotalPages())
+                .build();
     }
 }

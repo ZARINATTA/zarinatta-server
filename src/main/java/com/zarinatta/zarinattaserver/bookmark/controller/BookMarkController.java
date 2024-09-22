@@ -1,8 +1,12 @@
-package com.zarinatta.zarinattaserver.bookmark;
+package com.zarinatta.zarinattaserver.bookmark.controller;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
+import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
+import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.BookMarkSearchResponse;
+import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkPageResponse;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.UserNotFoundException;
@@ -55,5 +59,13 @@ public class BookMarkController {
                 .orElseThrow(() -> new UserNotFoundException("deleteBookMark"));
         bookMarkService.deleteBookMark(user, bookMarkId);
         return "BookMarkId: " + bookMarkId + " - 즐겨찾기 삭제 완료";
+    }
+
+    @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
+    public MyBookMarkPageResponse getMyBookMarkList(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @Valid MyBookMarkRequest myBookMarkRequest) {
+        User user = jwtService.findUserByToken(authorizationHeader)
+                .orElseThrow(() -> new UserNotFoundException("getMyBookMarkList"));
+        return bookMarkService.getMyBookMark(user, myBookMarkRequest);
     }
 }

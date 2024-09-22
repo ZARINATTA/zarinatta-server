@@ -1,6 +1,8 @@
 package com.zarinatta.zarinattaserver.bookmark;
 
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
+import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
