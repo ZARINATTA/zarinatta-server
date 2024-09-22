@@ -1,9 +1,12 @@
 package com.zarinatta.zarinattaserver.ticket.dto.request;
 
+import com.zarinatta.zarinattaserver.enums.StationCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import com.zarinatta.zarinattaserver.enums.StationCode;
+import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -13,8 +16,10 @@ public class TicketSearchRequest {
     @NotNull(message = "도착역 입력 필수")
     private StationCode arriveStation;
     @NotBlank(message = "출발 날짜 입력 필수")
+    @Pattern(regexp = "^\\d{8}$", message = "날짜 값은 'YYYYMMDD' 형식이어야 합니다.")
     private String departDate;
     @NotBlank(message = "출발 시간 입력 필수")
+    @Pattern(regexp = "^\\d{14}$", message = "시간 값은 'YYYYMMDDHHMMSS' 형식이어야 합니다.")
     private String departTime;
     private String trainType;
 
