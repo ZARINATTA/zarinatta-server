@@ -1,9 +1,11 @@
 package com.zarinatta.zarinattaserver.auth.controller;
 
+import com.zarinatta.zarinattaserver.auth.dto.MasterTokenDto;
 import com.zarinatta.zarinattaserver.auth.dto.RedirectDto;
 import com.zarinatta.zarinattaserver.auth.dto.TestDto;
 import com.zarinatta.zarinattaserver.auth.dto.TokenResponseDto;
 import com.zarinatta.zarinattaserver.auth.service.AuthService;
+import com.zarinatta.zarinattaserver.auth.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Map;
 @Slf4j
 public class AuthController {
     private final AuthService authService;
+    private final JwtService jwtService;
 
     @GetMapping("/redirect")
     public ResponseEntity<RedirectDto> redirect() throws IOException, InterruptedException {
@@ -81,6 +84,24 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Set-Cookie", deletedCookie.toString()).build();
+    }
+
+    @GetMapping("/master")
+    public ResponseEntity<Map<String, String>> generateMasterToken(HttpServletResponse response) {
+
+        MasterTokenDto masterTokenDto = jwtService.createMasterToken();
+
+        ResponseCookie cookie = ResponseCookie.from("skt", masterTokenDto.getAccessToken())
+                .maxAge(-1) // 쿠키 만료 시간 설정
+                .path("/") // 쿠키의 경로 설정
+                .httpOnly(true) // 보안 설정
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Set-Cookie", masterTokenDto.getAccessToken())
+                .body(Map.of("refreshToken", masterTokenDto.getRefreshToken()));
     }
 
     @GetMapping("/test")
