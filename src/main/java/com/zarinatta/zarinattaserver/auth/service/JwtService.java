@@ -1,5 +1,6 @@
 package com.zarinatta.zarinattaserver.auth.service;
 
+import com.zarinatta.zarinattaserver.auth.dto.MasterTokenDto;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.ErrorCode;
 import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
@@ -22,6 +23,9 @@ public class JwtService {
 
     @Value("${jwt.secret}") // application.properties 등에 보관한다.
     private String secretKey;
+
+    @Value("${jwt.master.userId}")
+    private String masterUserId;
 
     private final static long ACCESS_TIME = 30 * 60 * 1000L; //30분
 
@@ -56,6 +60,24 @@ public class JwtService {
                 .setExpiration(new Date(now.getTime() + REFRESH_TIME))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public MasterTokenDto createMasterToken() {
+        Claims claims = Jwts.claims().setSubject(masterUserId); // JWT payload 에 저장되는 정보단위
+        Date now = new Date();
+
+        String accessToken = Jwts.builder()
+                .setClaims(claims) // 정보 저장
+                .setIssuedAt(now) // 토큰 발행 시간 정보
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // 암호화 알고리즘과, secret 값
+                .compact();
+
+        String refreshToken = Jwts.builder()
+                .setIssuedAt(now)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+
+        return MasterTokenDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     public String decodeAccessToken(String token) throws ZarinattaException {
