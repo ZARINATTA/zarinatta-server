@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.enums.StationCode;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.request.TicketSearchRequest;
+import com.zarinatta.zarinattaserver.ticket.dto.request.TicketSearchRequest;
 
 import java.util.Arrays;
 import java.util.List;
