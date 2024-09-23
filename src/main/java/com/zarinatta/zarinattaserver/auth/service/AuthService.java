@@ -143,12 +143,6 @@ public class AuthService {
         String email = kakaoProfileDto.getKakao_account().getEmail();
         String nickname = kakaoProfileDto.getKakao_account().getProfile().getNickname();
 
-        String userId = userService.findUserIdByEmail(email);
-
-        if (userId != null) {
-            throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
-        }
-
         String newUserId = userService.save(UserInputDto.builder()
                 .userEmail(email)
                 .userNick(nickname)
