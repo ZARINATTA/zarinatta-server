@@ -38,7 +38,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Set-Cookie", accessTokenCookie.toString())
-                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
+                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken(), "userEmail", tokenResponseDto.getUserEmail(), "userNick", tokenResponseDto.getUserNick()));
     }
 
     @PostMapping("/authorize")
