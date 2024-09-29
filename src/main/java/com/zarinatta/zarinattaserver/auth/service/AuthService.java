@@ -157,7 +157,7 @@ public class AuthService {
 
         redisService.setValue(refreshToken, userId, REFRESH_TIME);
 
-        return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).userNick(nickname).build();
+        return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).userNick(nickname).userEmail(email).build();
     }
 
 //    @Transactional
