@@ -14,6 +14,8 @@ public enum ErrorCode {
 
     // 404
     USER_NOT_FOUND("U-001", HttpStatus.NOT_FOUND, "USER_NOT_FOUND"),
+    // 409
+    EXIST_USER("U-002", HttpStatus.CONFLICT, "EXIST_USER"),
 
     // 500
     KAKAO_SERVER_ERROR("K-001", HttpStatus.INTERNAL_SERVER_ERROR, "KAKAO_API_RESPONSE_ERROR"),
