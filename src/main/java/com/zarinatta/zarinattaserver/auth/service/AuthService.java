@@ -143,6 +143,11 @@ public class AuthService {
         String email = kakaoProfileDto.getKakao_account().getEmail();
         String nickname = kakaoProfileDto.getKakao_account().getProfile().getNickname();
 
+        //TODO: 존재하는 email인지 확인하는 code, 409 에러를 뱉는다
+        if(userService.findUserIdByEmail(email) == null) {
+            throw new ZarinattaException(ErrorCode.EXIST_USER);
+        }
+
         String newUserId = userService.save(UserInputDto.builder()
                 .userEmail(email)
                 .userNick(nickname)
