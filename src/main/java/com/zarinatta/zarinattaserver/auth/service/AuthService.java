@@ -69,19 +69,6 @@ public class AuthService {
        return RedirectDto.builder().redirectUri(redirectUri).build();
     }
 
-//    public RedirectDto redirect() {
-//        String requestUri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + CLIENT_ID + "&redirect_uri=" + REDIRECT_URI + "&nonce=" + nonce;
-//
-//        WebClient webClient = WebClient.create();
-//
-//        String response = webClient.get()
-//                .uri(requestUri)
-//                .exchangeToMono(AuthService::handleResponse)
-//                .block();
-//
-//        return RedirectDto.builder().redirectUri(response).build();
-//    }
-
     @Transactional
     public TokenResponseDto signup2(String code) throws ZarinattaException, IOException, InterruptedException {
         String getTokenUri = "https://kauth.kakao.com/oauth/token";
@@ -159,69 +146,6 @@ public class AuthService {
 
         return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).userNick(nickname).userEmail(email).build();
     }
-
-//    @Transactional
-//    public TokenResponseDto signup(String code) throws ZarinattaException {
-//        String getTokenUri = "https://kauth.kakao.com/oauth/token";
-//
-//        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-//        formData.add("grant_type", "authorization_code");
-//        formData.add("client_id", CLIENT_ID);
-//        formData.add("code", code);
-//        formData.add("redirect_uri", REDIRECT_URI);
-//
-//        WebClient webClient = WebClient.create();
-//
-//        LoginDto loginDto = webClient.post()
-//                .uri(getTokenUri)
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .body(BodyInserters.fromFormData(formData))
-//                .retrieve()
-//                .onStatus(
-//                        status -> status.is4xxClientError() || status.is5xxServerError(),
-//                        clientResponse -> clientResponse.bodyToMono(String.class)
-//                                .flatMap(errorBody -> Mono.error(new ZarinattaException(ZarinattaExceptionType.KAKAO_SERVER_ERROR)))
-//                )
-//                .bodyToMono(LoginDto.class)
-//                .block();
-//
-//        String getUserInfoUri = "https://kapi.kakao.com/v2/user/me";
-//        webClient = WebClient.create();
-//
-//        KakaoProfileDto kakaoProfileDto = webClient.post()
-//                .uri(getUserInfoUri)
-//                .headers(headers -> headers.setBearerAuth(loginDto.getAccess_token()))
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .retrieve()
-//                .onStatus(
-//                        status -> status.is4xxClientError() || status.is5xxServerError(),
-//                        clientResponse -> clientResponse.bodyToMono(String.class)
-//                                .flatMap(errorBody -> Mono.error(new ZarinattaException(ZarinattaExceptionType.KAKAO_SERVER_ERROR)))
-//                )
-//                .bodyToMono(KakaoProfileDto.class)
-//                .block();
-//
-//        String email = kakaoProfileDto.getKakao_account().getEmail();
-//        String nickname = kakaoProfileDto.getKakao_account().getProfile().getNickname();
-//
-//        String userId = userService.findUserIdByEmail(email);
-//
-//        if (userId != null) {
-//            throw new ZarinattaException(ZarinattaExceptionType.INVALID_TOKEN_ERROR);
-//        }
-//
-//        String newUserId = userService.save(UserInputDto.builder()
-//                .userEmail(email)
-//                .userNick(nickname)
-//                .build());
-//
-//        String accessToken = jwtService.createAccessToken(newUserId);
-//        String refreshToken = jwtService.createRefreshToken();
-//
-//        redisService.setValue(refreshToken, newUserId, REFRESH_TIME);
-//
-//        return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
-//    }
 
     public TokenResponseDto authorize(String accessToken, String refreshToken) throws ZarinattaException {
         String userId = redisService.getValue(refreshToken);
