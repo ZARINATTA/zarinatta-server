@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,68 +18,59 @@ import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
 @Slf4j
-public class TokenValidationFilter implements Filter {
+public class TokenValidationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private List<String> excludeUrls = new ArrayList<>();
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // 필터 초기화 작업이 필요하면 여기에 작성
+    public void setExcludeUrls(List<String> excludeUrls) {
+        this.excludeUrls = excludeUrls;
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ZarinattaException, IOException, ServletException {
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        if(httpRequest.getRequestURI().contains("/api/v1/ticket")) {
-            chain.doFilter(httpRequest, httpResponse);
-            return;
-        }
+        System.out.println("Starting filter for URI: " + httpRequest.getRequestURI());
 
-        if(excludeUrls.contains(httpRequest.getRequestURI())) {
-            chain.doFilter(httpRequest, httpResponse);
-            return;
-        }
+        boolean isNotFiltered = httpRequest.getRequestURI().contains("/api/v1/ticket") ||
+                excludeUrls.contains(httpRequest.getRequestURI());
 
-        log.info("[TokenValidationFilter] Filter is executing");
+        System.out.println("isNotFiltered: " + isNotFiltered);
 
-        Cookie[] cookies = httpRequest.getCookies();
-        String accessToken = null;
+        if (!isNotFiltered) {
+            log.info("[TokenValidationFilter] Filter is executing");
 
-        if (cookies != null && cookies.length > 0) {
-            log.info("[TokenValidationFilter] Cookies found: " + cookies.length);
-            accessToken = Arrays.stream(cookies)
-                    .filter(cookie -> "skt".equals(cookie.getName()))
-                    .map(Cookie::getValue)
-                    .findFirst()
-                    .orElse(null);
+            Cookie[] cookies = httpRequest.getCookies();
+            String accessToken = null;
 
-        } else {
-            log.error("[TokenValidationFilter] No cookies found in the request.");
-        }
+            if (cookies != null && cookies.length > 0) {
+                log.info("[TokenValidationFilter] Cookies found: " + cookies.length);
+                accessToken = Arrays.stream(cookies)
+                        .filter(cookie -> "skt".equals(cookie.getName()))
+                        .map(Cookie::getValue)
+                        .findFirst()
+                        .orElse(null);
+            } else {
+                log.error("[TokenValidationFilter] No cookies found in the request.");
+            }
 
-        if (accessToken != null) {
+            if (accessToken == null) {
+                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
+                return; // 응답을 보낸 후 메서드 종료
+            }
+
             String userId = jwtService.decodeAccessToken(accessToken);
 
-            //if (userId != null) {
-                httpRequest.setAttribute("accessToken", accessToken);
-                httpRequest.setAttribute("userId", userId);
-                log.info("[TokenValidationFilter] Access token and userId set in request");
-                chain.doFilter(httpRequest, httpResponse);
-                return;
-            //}
+            httpRequest.setAttribute("accessToken", accessToken);
+            httpRequest.setAttribute("userId", userId);
+            log.info("[TokenValidationFilter] Access token and userId set in request");
         }
 
-        // 유효하지 않은 토큰인 경우 401 에러 반환
-        httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
-    }
-
-    public void setExcludeUrls(List<String> excludeUrls) {
-        this.excludeUrls = excludeUrls;
+        // 필터 로직이 완료된 후 요청을 계속 진행
+        log.info("Continuing filter chain for URI: " + httpRequest.getRequestURI());
+        filterChain.doFilter(httpRequest, httpResponse);
     }
 }
