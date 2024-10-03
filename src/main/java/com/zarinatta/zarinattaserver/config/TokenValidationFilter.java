@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 public class TokenValidationFilter implements Filter {
 
     private final JwtService jwtService;
@@ -54,6 +56,8 @@ public class TokenValidationFilter implements Filter {
                     .map(Cookie::getValue)
                     .findFirst()
                     .orElse(null);
+
+            log.info("[TokenValidationFilter: accessToken -> "+accessToken);
         }
 
         // TODO: validateToken이 잘못된듯
