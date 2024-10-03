@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,19 +14,15 @@ import java.util.List;
 public class FilterConfig {
 
     @Bean
-    public List<FilterRegistrationBean<?>> filters(JwtService jwtService) {
+    public FilterRegistrationBean<TokenValidationFilter> filters(JwtService jwtService) {
         FilterRegistrationBean<TokenValidationFilter> tokenValidationFilterRegistrationBean = new FilterRegistrationBean<>();
+
         TokenValidationFilter tokenValidationFilter = new TokenValidationFilter(jwtService);
-        tokenValidationFilter.setExcludeUrls(Arrays.asList("/api/v1/auth/redirect", "/api/v1/auth/signup", "/api/v1/ticket/search", "/auth/test", "/api/v1/station/search", "/api/v1/station/frequent"));
+        tokenValidationFilter.setExcludeUrls(Arrays.asList("/api/v1/auth/redirect", "/api/v1/auth/login", "/api/v1/auth/master", "/api/v1/ticket/search", "/auth/test", "/api/v1/station/search", "/api/v1/station/frequent"));
         tokenValidationFilterRegistrationBean.setFilter(tokenValidationFilter);
+        tokenValidationFilterRegistrationBean.setOrder(1);
 
-        FilterRegistrationBean<CharacterEncodingFilter> characterEncodingFilterRegistrationBean = new FilterRegistrationBean<>();
-        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
-        characterEncodingFilter.setForceEncoding(true);
-        characterEncodingFilterRegistrationBean.setFilter(characterEncodingFilter);
-
-        return Arrays.asList(tokenValidationFilterRegistrationBean, characterEncodingFilterRegistrationBean);
+        return tokenValidationFilterRegistrationBean;
     }
 }
 
