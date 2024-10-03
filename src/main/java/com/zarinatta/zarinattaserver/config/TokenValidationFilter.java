@@ -50,6 +50,8 @@ public class TokenValidationFilter implements Filter {
         Cookie[] cookies = httpRequest.getCookies();
         String accessToken = null;
 
+        log.info("[TokenValidationFilter: cookies -> "+cookies[0]);
+
         if (cookies != null) {
             accessToken = Arrays.stream(cookies)
                     .filter(cookie -> "skt".equals(cookie.getName()))
