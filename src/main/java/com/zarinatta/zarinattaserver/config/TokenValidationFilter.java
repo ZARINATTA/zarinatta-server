@@ -74,8 +74,6 @@ public class TokenValidationFilter implements Filter {
             //}
         }
 
-        chain.doFilter(httpRequest, httpResponse); // 필터 체인을 계속 실행
-
         // 유효하지 않은 토큰인 경우 401 에러 반환
         httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
     }
