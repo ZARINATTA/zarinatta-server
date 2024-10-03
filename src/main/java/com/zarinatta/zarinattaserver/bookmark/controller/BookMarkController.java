@@ -1,15 +1,15 @@
 package com.zarinatta.zarinattaserver.bookmark.controller;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
-import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
-import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
-import com.zarinatta.zarinattaserver.bookmark.dto.response.BookMarkSearchResponse;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkPageResponse;
+import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
+import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.UserNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.zarinatta.zarinattaserver.enums.Values.HEADER_AUTHORIZATION;
 
 @Slf4j
 @RestController
@@ -33,20 +30,21 @@ public class BookMarkController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookMarkSearchResponse> searchBookMark(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @RequestParam("ticketIds") List<Long> ticketIds) {
-        User user = jwtService.findUserByToken(authorizationHeader)
+    public List<Long> searchBookMark(HttpServletRequest request, @RequestParam("ticketIds") List<Long> ticketIds) {
+        String accessToken = (String) request.getAttribute("accessToken");
+        User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("searchBookMark"));
         List<BookMark> bookMarks = bookMarkRepository.findAllByTicketIdInAndUserId(ticketIds, user);
-        List<BookMarkSearchResponse> response = bookMarks.stream()
-                .map(bookMark -> BookMarkSearchResponse.of(bookMark.getTicket().getId(), true))
-                .collect(Collectors.toList());
+        List<Long> response = bookMarks.stream().map(bookMark -> bookMark.getId())
+                .toList();
         return response;
     }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createBookMark(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @RequestBody @Valid BookMarkCreateRequest bookMarkCreateRequest) {
-        User user = jwtService.findUserByToken(authorizationHeader)
+    public String createBookMark(HttpServletRequest request, @RequestBody @Valid BookMarkCreateRequest bookMarkCreateRequest) {
+        String accessToken = (String) request.getAttribute("accessToken");
+        User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("createBookMark"));
         bookMarkService.createBookMark(user, bookMarkCreateRequest);
         return "TicketId: " + bookMarkCreateRequest.getTicketId() + " - 즐겨찾기 추가 완료";
@@ -54,8 +52,9 @@ public class BookMarkController {
 
     @DeleteMapping("/delete/{bookMarkId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteBookMark(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @PathVariable Long bookMarkId) {
-        User user = jwtService.findUserByToken(authorizationHeader)
+    public String deleteBookMark(HttpServletRequest request, @PathVariable Long bookMarkId) {
+        String accessToken = (String) request.getAttribute("accessToken");
+        User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("deleteBookMark"));
         bookMarkService.deleteBookMark(user, bookMarkId);
         return "BookMarkId: " + bookMarkId + " - 즐겨찾기 삭제 완료";
@@ -63,8 +62,9 @@ public class BookMarkController {
 
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    public MyBookMarkPageResponse getMyBookMarkList(@RequestHeader(value = HEADER_AUTHORIZATION) String authorizationHeader, @Valid MyBookMarkRequest myBookMarkRequest) {
-        User user = jwtService.findUserByToken(authorizationHeader)
+    public MyBookMarkPageResponse getMyBookMarkList(HttpServletRequest request, @Valid MyBookMarkRequest myBookMarkRequest) {
+        String accessToken = (String) request.getAttribute("accessToken");
+        User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("getMyBookMarkList"));
         return bookMarkService.getMyBookMark(user, myBookMarkRequest);
     }
