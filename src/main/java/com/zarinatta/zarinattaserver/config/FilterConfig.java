@@ -20,12 +20,6 @@ public class FilterConfig {
         tokenValidationFilter.setExcludeUrls(Arrays.asList("/api/v1/auth/redirect", "/api/v1/auth/signup", "/api/v1/ticket/search", "/auth/test", "/api/v1/station/search", "/api/v1/station/frequent"));
         tokenValidationFilterRegistrationBean.setFilter(tokenValidationFilter);
         tokenValidationFilterRegistrationBean.setOrder(1);
-//
-//        FilterRegistrationBean<CharacterEncodingFilter> characterEncodingFilterRegistrationBean = new FilterRegistrationBean<>();
-//        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-//        characterEncodingFilter.setEncoding("UTF-8");
-//        characterEncodingFilter.setForceEncoding(true);
-//        characterEncodingFilterRegistrationBean.setFilter(characterEncodingFilter);
 
         return tokenValidationFilterRegistrationBean;
     }

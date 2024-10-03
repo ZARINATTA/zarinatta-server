@@ -23,7 +23,7 @@ public class AuthController {
 
     @GetMapping("/redirect")
     public ResponseEntity<RedirectDto> redirect() throws IOException, InterruptedException {
-        return new ResponseEntity<>(authService.redirect2(), HttpStatusCode.valueOf(302));
+        return ResponseEntity.status(HttpStatus.OK).body(authService.redirect2());
     }
 
     @GetMapping("/login")

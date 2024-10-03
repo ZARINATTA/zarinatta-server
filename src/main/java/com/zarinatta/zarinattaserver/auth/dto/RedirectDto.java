@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RedirectDto {
-    String redirectUri;
+    private String redirectUri;
 }
