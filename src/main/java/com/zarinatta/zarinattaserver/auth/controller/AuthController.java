@@ -9,6 +9,7 @@ import com.zarinatta.zarinattaserver.auth.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
@@ -36,7 +38,7 @@ public class AuthController {
                 .sameSite("None")
                 .httpOnly(false)
                 .secure(true)
-                .maxAge(30 * 60 * 1000L)
+                .maxAge(30 * 60L)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -56,7 +58,7 @@ public class AuthController {
                 .sameSite("None")
                 .httpOnly(false)
                 .secure(true)
-                .maxAge(30 * 60 * 1000L)
+                .maxAge(30 * 60L)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -70,6 +72,8 @@ public class AuthController {
 
         authService.logout(accessToken);
 
+        log.info("[AuthController-logout] : accessToken -> "+accessToken);
+
         ResponseCookie deletedCookie = ResponseCookie.from("skt", "")
                 .maxAge(0) // 쿠키 만료 시간 설정
                 .path("/") // 쿠키의 경로 설정
@@ -78,7 +82,8 @@ public class AuthController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, deletedCookie.toString());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Set-Cookie", deletedCookie.toString()).build();
     }
 
     @GetMapping("/master")

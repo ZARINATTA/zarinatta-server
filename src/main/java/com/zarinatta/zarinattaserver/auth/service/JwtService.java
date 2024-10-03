@@ -83,6 +83,10 @@ public class JwtService {
     public String decodeAccessToken(String token) throws ZarinattaException {
         //TODO: validation 여기서 안할 때 문제 없을까 생각해봐야함
         try {
+            if(token == null) {
+                log.info("[JwtService - decodeAccessToken] : token is null");
+            }
+
             Claims claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)
