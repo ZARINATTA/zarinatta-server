@@ -1,5 +1,6 @@
 package com.zarinatta.zarinattaserver.entity;
 
+import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -49,5 +50,16 @@ public class BookMark {
         this.wantWaitingReservation = wantWaitingReservation;
         this.ticket = ticket;
         this.user = user;
+    }
+
+    public static BookMark from(BookMarkCreateRequest request, Ticket ticket, User user) {
+        return BookMark.builder()
+                .wantFirstClass(request.getWantFirstClass())
+                .wantNormalSeat(request.getWantNormalSeat())
+                .wantBabySeat(request.getWantBabySeat())
+                .wantWaitingReservation(request.getWantWaitingReservation())
+                .ticket(ticket)
+                .user(user)
+                .build();
     }
 }

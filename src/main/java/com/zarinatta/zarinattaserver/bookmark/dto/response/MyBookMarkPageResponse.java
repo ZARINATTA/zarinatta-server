@@ -1,19 +1,21 @@
-package com.zarinatta.zarinattaserver.ticket.controller.dto.response;
+package com.zarinatta.zarinattaserver.bookmark.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-public class PageTicketResponse {
-    private List<TicketSearchResponse> responseList;
+@NoArgsConstructor
+public class MyBookMarkPageResponse {
+    private List<MyBookMarkResponse> responseList;
     private int page;
     private long totalDataCount;
     private int totalPageCount;
 
     @Builder
-    public PageTicketResponse(List<TicketSearchResponse> responseList, int page, long totalDataCount, int totalPageCount) {
+    public MyBookMarkPageResponse(List<MyBookMarkResponse> responseList, int page, long totalDataCount, int totalPageCount) {
         this.responseList = responseList;
         this.page = page;
         this.totalDataCount = totalDataCount;
