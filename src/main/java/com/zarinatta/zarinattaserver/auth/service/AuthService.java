@@ -143,17 +143,21 @@ public class AuthService {
         String email = kakaoProfileDto.getKakao_account().getEmail();
         String nickname = kakaoProfileDto.getKakao_account().getProfile().getNickname();
 
-        String newUserId = userService.save(UserInputDto.builder()
-                .userEmail(email)
-                .userNick(nickname)
-                .build());
+        String userId = userService.findUserIdByEmail(email);
 
-        String accessToken = jwtService.createAccessToken(newUserId);
+        if(userService.findUserIdByEmail(email) == null) {
+            userId = userService.save(UserInputDto.builder()
+                    .userEmail(email)
+                    .userNick(nickname)
+                    .build());
+        }
+
+        String accessToken = jwtService.createAccessToken(userId);
         String refreshToken = jwtService.createRefreshToken();
 
-        redisService.setValue(refreshToken, newUserId, REFRESH_TIME);
+        redisService.setValue(refreshToken, userId, REFRESH_TIME);
 
-        return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+        return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).userNick(nickname).userEmail(email).build();
     }
 
 //    @Transactional
@@ -218,29 +222,6 @@ public class AuthService {
 //
 //        return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 //    }
-
-    // TODO: 있는 User인지만 확인 -> 새로운 refresh, accessToken 발급
-    public TokenResponseDto login(String accessToken, String refreshToken) throws ZarinattaException {
-        if(!jwtService.isValidToken(accessToken)) {
-            if(redisService.getValue(refreshToken).isEmpty()) {
-                throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
-            }
-        }
-
-        String userId = jwtService.decodeAccessToken(accessToken);
-
-        if(userId == null) {
-            throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
-        }
-
-        String newAccessToken = jwtService.createAccessToken(userId);
-        String newRefreshToken = jwtService.createRefreshToken();
-
-        redisService.deleteValue(refreshToken);
-        redisService.setValue(newRefreshToken, userId, REFRESH_TIME);
-
-        return TokenResponseDto.builder().accessToken(newAccessToken).refreshToken(newRefreshToken).build();
-    }
 
     public TokenResponseDto authorize(String accessToken, String refreshToken) throws ZarinattaException {
         String userId = redisService.getValue(refreshToken);

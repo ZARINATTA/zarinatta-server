@@ -27,7 +27,7 @@ public class AuthController {
         return new ResponseEntity<>(authService.redirect2(), HttpStatusCode.valueOf(302));
     }
 
-    @GetMapping("/signup")
+    @GetMapping("/login")
     public ResponseEntity<Map<String, String>> signup(@RequestParam String code) throws Exception {
         TokenResponseDto tokenResponseDto = authService.signup2(code);
 
@@ -41,27 +41,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Set-Cookie", accessTokenCookie.toString())
-                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(HttpServletRequest request, @RequestBody Map<String, String> map) throws Exception {
-        String accessToken = (String) request.getAttribute("accessToken");
-        String refreshToken = map.get("refreshToken");
-
-        TokenResponseDto tokenResponseDto = authService.login(accessToken, refreshToken);
-
-        ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.getAccessToken())
-                .path("/")
-                .sameSite("None")
-                .httpOnly(false)
-                .secure(true)
-                .maxAge(30 * 60 * 1000L)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .header("Set-Cookie", accessTokenCookie.toString())
-                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
+                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken(), "userEmail", tokenResponseDto.getUserEmail(), "userNick", tokenResponseDto.getUserNick()));
     }
 
     @PostMapping("/authorize")
