@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Component
 @Slf4j
 public class TokenValidationFilter implements Filter {
 
@@ -33,8 +35,7 @@ public class TokenValidationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        httpRequest.setCharacterEncoding("UTF-8");
-        httpResponse.setCharacterEncoding("UTF-8");
+        System.out.println("왜안돼이런michin");
 
         if(httpRequest.getRequestURI().contains("/api/v1/ticket")) {
             chain.doFilter(httpRequest, httpResponse);
@@ -46,35 +47,36 @@ public class TokenValidationFilter implements Filter {
             return;
         }
 
-        // 쿠키에서 accessToken 가져오기
+        log.info("[TokenValidationFilter] Filter is executing");
+
         Cookie[] cookies = httpRequest.getCookies();
         String accessToken = null;
 
-        log.info("[TokenValidationFilter: cookies -> "+cookies[0]);
-
-        if (cookies != null) {
+        if (cookies != null && cookies.length > 0) {
+            log.info("[TokenValidationFilter] Cookies found: " + cookies.length);
             accessToken = Arrays.stream(cookies)
                     .filter(cookie -> "skt".equals(cookie.getName()))
                     .map(Cookie::getValue)
                     .findFirst()
                     .orElse(null);
 
-            log.info("[TokenValidationFilter: accessToken -> "+accessToken);
+        } else {
+            log.error("[TokenValidationFilter] No cookies found in the request.");
         }
 
-        // TODO: validateToken이 잘못된듯
         if (accessToken != null) {
             String userId = jwtService.decodeAccessToken(accessToken);
 
-            // 유효한 토큰인 경우 요청을 계속 처리
-            if (userId != null) {
-                // TODO: 이렇게 userId를 request에 넣어줘도 되는건지 좀 생각해봐야할듯
+            //if (userId != null) {
                 httpRequest.setAttribute("accessToken", accessToken);
                 httpRequest.setAttribute("userId", userId);
+                log.info("[TokenValidationFilter] Access token and userId set in request");
                 chain.doFilter(httpRequest, httpResponse);
                 return;
-            }
+            //}
         }
+
+        chain.doFilter(httpRequest, httpResponse); // 필터 체인을 계속 실행
 
         // 유효하지 않은 토큰인 경우 401 에러 반환
         httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
