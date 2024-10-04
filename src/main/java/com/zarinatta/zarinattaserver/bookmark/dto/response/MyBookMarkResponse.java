@@ -19,14 +19,14 @@ public class MyBookMarkResponse {
     private String arriveTime;
     private StationCode arriveStation;
     // 즐겨찾기 정보
-    private Long bookMarkId;
+    private Long bookmarkId;
     private boolean wantFirstClass;
     private SeatLookingFor wantNormalSeat;
     private SeatLookingFor wantBabySeat;
     private boolean wantWaitingReservation;
 
     @Builder
-    public MyBookMarkResponse(Long ticketId, String ticketType, String departDate, String departTime, StationCode departStation, String arriveTime, StationCode arriveStation, Long bookMarkId, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation) {
+    public MyBookMarkResponse(Long ticketId, String ticketType, String departDate, String departTime, StationCode departStation, String arriveTime, StationCode arriveStation, Long bookmarkId, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation) {
         this.ticketId = ticketId;
         this.ticketType = ticketType;
         this.departDate = departDate;
@@ -34,7 +34,7 @@ public class MyBookMarkResponse {
         this.departStation = departStation;
         this.arriveTime = arriveTime;
         this.arriveStation = arriveStation;
-        this.bookMarkId = bookMarkId;
+        this.bookmarkId = bookmarkId;
         this.wantFirstClass = wantFirstClass;
         this.wantNormalSeat = wantNormalSeat;
         this.wantBabySeat = wantBabySeat;
@@ -50,7 +50,7 @@ public class MyBookMarkResponse {
                 .departStation(bookMark.getTicket().getDepartStation())
                 .arriveTime(bookMark.getTicket().getArriveTime())
                 .arriveStation(bookMark.getTicket().getArriveStation())
-                .bookMarkId(bookMark.getId())
+                .bookmarkId(bookMark.getId())
                 .wantFirstClass(bookMark.isWantFirstClass())
                 .wantNormalSeat(bookMark.getWantNormalSeat())
                 .wantBabySeat(bookMark.getWantBabySeat())
