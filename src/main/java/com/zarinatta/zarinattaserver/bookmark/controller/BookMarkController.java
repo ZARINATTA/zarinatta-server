@@ -9,6 +9,7 @@ import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.UserNotFoundException;
+import com.zarinatta.zarinattaserver.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,8 @@ public class BookMarkController {
     @ResponseStatus(HttpStatus.CREATED)
     public String createBookMark(HttpServletRequest request, @RequestBody @Valid BookMarkCreateRequest bookMarkCreateRequest) {
         String accessToken = (String) request.getAttribute("accessToken");
+
+        String userId = jwtService.decodeAccessToken(accessToken);
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("createBookMark"));
         bookMarkService.createBookMark(user, bookMarkCreateRequest);

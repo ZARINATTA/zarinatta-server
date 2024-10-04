@@ -133,11 +133,8 @@ public class JwtService {
 
     public Optional<User> findUserByToken(String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
-            Long userId = claims.get("userId", Long.class);
+            String userId = this.decodeAccessToken(token);
+
             return userRepository.findById(String.valueOf(userId));
         } catch (ExpiredJwtException e) {
             throw new ZarinattaException(ErrorCode.EXPIRED_TOKEN_ERROR);
