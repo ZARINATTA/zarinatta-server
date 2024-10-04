@@ -40,7 +40,7 @@ public class TokenValidationFilter extends OncePerRequestFilter {
 
         System.out.println("isNotFiltered: " + isNotFiltered);
 
-        if (!isNotFiltered) {
+        if (!isNotFiltered && !httpRequest.getMethod().equals("OPTIONS")) {
             log.info("[TokenValidationFilter] Filter is executing");
 
             Cookie[] cookies = httpRequest.getCookies();
