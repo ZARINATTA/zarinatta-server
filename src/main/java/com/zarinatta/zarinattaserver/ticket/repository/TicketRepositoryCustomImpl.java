@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import com.zarinatta.zarinattaserver.entity.QTicket;
 import com.zarinatta.zarinattaserver.entity.Ticket;
-import com.zarinatta.zarinattaserver.ticket.controller.dto.request.TicketSearchRequest;
+import com.zarinatta.zarinattaserver.ticket.dto.request.TicketSearchRequest;
 
 import java.util.List;
 
