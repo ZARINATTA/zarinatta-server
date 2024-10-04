@@ -35,9 +35,8 @@ public class BookMarkController {
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("searchBookMark"));
         List<BookMark> bookMarks = bookMarkRepository.findAllByTicketIdInAndUserId(ticketIds, user);
-        List<Long> response = bookMarks.stream().map(bookMark -> bookMark.getId())
-                .toList();
-        return response;
+        List<Long> bookMarkedTicketIds = bookMarks.stream().map(bookMark -> bookMark.getTicket().getId()).toList();
+        return bookMarkedTicketIds;
     }
 
     @PostMapping("/create")
