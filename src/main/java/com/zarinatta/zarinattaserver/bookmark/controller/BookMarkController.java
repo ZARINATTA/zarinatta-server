@@ -4,6 +4,7 @@ import com.zarinatta.zarinattaserver.auth.service.JwtService;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkPageResponse;
+import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkSearchResponse;
 import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
 import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
@@ -31,13 +32,18 @@ public class BookMarkController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<Long> searchBookMark(HttpServletRequest request, @RequestParam("ticketIds") List<Long> ticketIds) {
+    public List<MyBookMarkSearchResponse> searchBookMark(HttpServletRequest request, @RequestParam("ticketIds") List<Long> ticketIds) {
         String accessToken = (String) request.getAttribute("accessToken");
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("searchBookMark"));
         List<BookMark> bookMarks = bookMarkRepository.findAllByTicketIdInAndUserId(ticketIds, user);
-        List<Long> response = bookMarks.stream().map(bookMark -> bookMark.getId())
+        List<MyBookMarkSearchResponse> response = bookMarks.stream()
+                .map(bm -> MyBookMarkSearchResponse.builder()
+                        .ticketId(bm.getTicket().getId())
+                        .bookmarkId(bm.getId())
+                        .build())
                 .toList();
+
         return response;
     }
 
