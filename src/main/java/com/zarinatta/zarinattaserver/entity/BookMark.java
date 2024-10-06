@@ -21,6 +21,9 @@ public class BookMark {
     private Long id;
 
     @Column
+    private boolean isSent;
+
+    @Column
     private boolean wantFirstClass;
 
     @Column
@@ -43,7 +46,8 @@ public class BookMark {
     private User user;
 
     @Builder
-    public BookMark(boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, Ticket ticket, User user) {
+    public BookMark(boolean isSent, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, Ticket ticket, User user) {
+        this.isSent = isSent;
         this.wantFirstClass = wantFirstClass;
         this.wantNormalSeat = wantNormalSeat;
         this.wantBabySeat = wantBabySeat;

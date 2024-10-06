@@ -19,7 +19,7 @@ public class TicketSearchRequest {
     @Pattern(regexp = "^\\d{8}$", message = "날짜 값은 'YYYYMMDD' 형식이어야 합니다.")
     private String departDate;
     @NotBlank(message = "출발 시간 입력 필수")
-    @Pattern(regexp = "^\\d{14}$", message = "시간 값은 'YYYYMMDDHHMMSS' 형식이어야 합니다.")
+    @Pattern(regexp = "^\\d{4}$", message = "시간 값은 'MMSS' 형식이어야 합니다.")
     private String departTime;
     private String trainType;
 
