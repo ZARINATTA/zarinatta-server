@@ -1,6 +1,7 @@
 package com.zarinatta.zarinattaserver.entity;
 
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,6 +23,10 @@ public class BookMark {
 
     @Column
     private boolean isSent;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private BookMarkStatus status;
 
     @Column
     private boolean wantFirstClass;
@@ -46,8 +51,9 @@ public class BookMark {
     private User user;
 
     @Builder
-    public BookMark(boolean isSent, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, Ticket ticket, User user) {
+    public BookMark(boolean isSent, BookMarkStatus status, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, Ticket ticket, User user) {
         this.isSent = isSent;
+        this.status = status;
         this.wantFirstClass = wantFirstClass;
         this.wantNormalSeat = wantNormalSeat;
         this.wantBabySeat = wantBabySeat;
@@ -58,6 +64,8 @@ public class BookMark {
 
     public static BookMark from(BookMarkCreateRequest request, Ticket ticket, User user) {
         return BookMark.builder()
+                .isSent(false)
+                .status(BookMarkStatus.UNKNOWN)
                 .wantFirstClass(request.getWantFirstClass())
                 .wantNormalSeat(request.getWantNormalSeat())
                 .wantBabySeat(request.getWantBabySeat())
@@ -65,5 +73,11 @@ public class BookMark {
                 .ticket(ticket)
                 .user(user)
                 .build();
+    }
+
+    //==비즈니스 로직==//
+    public BookMarkStatus updateStatus(BookMarkStatus bookMarkStatus) {
+        this.status = bookMarkStatus;
+        return this.status;
     }
 }
