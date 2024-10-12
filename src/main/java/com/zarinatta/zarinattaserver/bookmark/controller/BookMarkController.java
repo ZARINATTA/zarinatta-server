@@ -2,6 +2,7 @@ package com.zarinatta.zarinattaserver.bookmark.controller;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkStatusUpdateRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkPageResponse;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkSearchResponse;
@@ -9,8 +10,8 @@ import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
 import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.User;
+import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.UserNotFoundException;
-import com.zarinatta.zarinattaserver.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +52,6 @@ public class BookMarkController {
     @ResponseStatus(HttpStatus.CREATED)
     public String createBookMark(HttpServletRequest request, @RequestBody @Valid BookMarkCreateRequest bookMarkCreateRequest) {
         String accessToken = (String) request.getAttribute("accessToken");
-
-        String userId = jwtService.decodeAccessToken(accessToken);
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("createBookMark"));
         bookMarkService.createBookMark(user, bookMarkCreateRequest);
@@ -76,5 +75,15 @@ public class BookMarkController {
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("getMyBookMarkList"));
         return bookMarkService.getMyBookMark(user, myBookMarkRequest);
+    }
+
+    @PostMapping("/status")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookMarkStatus updateBookMarkState(HttpServletRequest request, BookMarkStatusUpdateRequest body) {
+        String accessToken = (String) request.getAttribute("accessToken");
+        User user = jwtService.findUserByToken(accessToken)
+                .orElseThrow(() -> new UserNotFoundException("updateBookMarkState"));
+        log.info(user.getUserNick() + "님이 - BookMarkId : " + body.getBookMarkId() + "상태 변경 : " + body.getUpdateStatus());
+        return bookMarkService.updateBookMarkStatus(body);
     }
 }

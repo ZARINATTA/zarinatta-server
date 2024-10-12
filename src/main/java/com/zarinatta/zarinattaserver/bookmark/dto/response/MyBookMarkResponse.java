@@ -1,6 +1,7 @@
 package com.zarinatta.zarinattaserver.bookmark.dto.response;
 
 import com.zarinatta.zarinattaserver.entity.BookMark;
+import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import com.zarinatta.zarinattaserver.enums.StationCode;
 import lombok.Builder;
@@ -24,9 +25,11 @@ public class MyBookMarkResponse {
     private SeatLookingFor wantNormalSeat;
     private SeatLookingFor wantBabySeat;
     private boolean wantWaitingReservation;
+    //즐겨찾기 상태
+    private BookMarkStatus status;
 
     @Builder
-    public MyBookMarkResponse(Long ticketId, String ticketType, String departDate, String departTime, StationCode departStation, String arriveTime, StationCode arriveStation, Long bookmarkId, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation) {
+    public MyBookMarkResponse(Long ticketId, String ticketType, String departDate, String departTime, StationCode departStation, String arriveTime, StationCode arriveStation, Long bookmarkId, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, BookMarkStatus status) {
         this.ticketId = ticketId;
         this.ticketType = ticketType;
         this.departDate = departDate;
@@ -39,6 +42,7 @@ public class MyBookMarkResponse {
         this.wantNormalSeat = wantNormalSeat;
         this.wantBabySeat = wantBabySeat;
         this.wantWaitingReservation = wantWaitingReservation;
+        this.status = status;
     }
 
     public static MyBookMarkResponse from(BookMark bookMark) {
@@ -55,6 +59,7 @@ public class MyBookMarkResponse {
                 .wantNormalSeat(bookMark.getWantNormalSeat())
                 .wantBabySeat(bookMark.getWantBabySeat())
                 .wantWaitingReservation(bookMark.isWantWaitingReservation())
+                .status(bookMark.getStatus())
                 .build();
     }
 }
