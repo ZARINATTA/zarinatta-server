@@ -4,12 +4,10 @@ import com.zarinatta.zarinattaserver.enums.StationSection;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity(name = "STATION")
-@Table(name = "STATION")
+@Entity
 @Getter
-@Builder
+@Table
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Station {
 
     @Id
@@ -24,7 +22,14 @@ public class Station {
     @Column(name = "STATION_NAME")
     private String name;
 
-    @Column(name = "STATION_COUNT")
+    @Column(name = "STATION_COUNT", columnDefinition = "BIGINT DEFAULT 0")
     @Builder.Default
     private long count = 0;
+
+    @Builder
+    public Station(StationSection section, String name, long count) {
+        this.section = section;
+        this.name = name;
+        this.count = count;
+    }
 }
