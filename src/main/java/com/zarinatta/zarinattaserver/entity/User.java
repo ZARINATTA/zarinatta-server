@@ -1,6 +1,5 @@
 package com.zarinatta.zarinattaserver.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,10 +22,8 @@ public class User {
     private String userNick;
 
     @Column(name="USER_PHONE")
-    @Nullable
     private String userPhoneNumber;
 
     @Column(name="USER_DEVICE_TOKEN")
-    @Nullable
     private String userDeviceToken;
 }
