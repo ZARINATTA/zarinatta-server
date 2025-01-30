@@ -46,4 +46,8 @@ public class TicketService {
                 .totalPageCount(ticketBySearchDTO.getTotalPages())
                 .build();
     }
+
+    public void insertMockData() {
+         ticketRepository.insertMockTicketData();
+    }
 }

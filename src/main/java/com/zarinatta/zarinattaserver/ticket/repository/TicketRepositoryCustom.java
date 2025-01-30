@@ -8,4 +8,5 @@ import com.zarinatta.zarinattaserver.ticket.dto.request.TicketSearchRequest;
 public interface TicketRepositoryCustom {
     Page<Ticket> findTicketBySearchDTO(TicketSearchRequest ticketSearchRequest, Pageable pageable);
     Long countAll(TicketSearchRequest ticketSearchRequest);
+    void insertMockTicketData();
 }
