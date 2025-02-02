@@ -1,7 +1,10 @@
 package com.zarinatta.zarinattaserver.ticket.repository;
 
+import com.querydsl.core.Query;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +24,9 @@ import static com.zarinatta.zarinattaserver.entity.QTicket.ticket;
 public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private QTicket qTicket = ticket;
 
@@ -74,6 +80,8 @@ public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
                 "    (REPLACE(CONCAT(CURDATE(), '210000'), '-', ''), '무궁화호 1313', REPLACE(CURDATE(), '-', ''), REPLACE(CONCAT(CURDATE(), '210000'), '-', ''), '부산', REPLACE(CONCAT(CURDATE(), '235500'), '-', ''), '광주', '38000원'),\n" +
                 "    (REPLACE(CONCAT(CURDATE(), '220000'), '-', ''), 'SRT 1414', REPLACE(CURDATE(), '-', ''), REPLACE(CONCAT(CURDATE(), '220000'), '-', ''), '서울', REPLACE(CONCAT(CURDATE(), '235500'), '-', ''), '전주', '25000원'),\n" +
                 "    (REPLACE(CONCAT(CURDATE(), '230000'), '-', ''), 'KTX-이음 1515', REPLACE(CURDATE(), '-', ''), REPLACE(CONCAT(CURDATE(), '230000'), '-', ''), '강릉', REPLACE(CONCAT(CURDATE(), '234500'), '-', ''), '서울', '30000원');\n";
+
+        entityManager.createNativeQuery(nativeQuery).executeUpdate();
     }
 
     private BooleanExpression ticketTypeEq(String trainType) {
