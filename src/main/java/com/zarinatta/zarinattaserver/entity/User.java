@@ -26,4 +26,8 @@ public class User {
 
     @Column(name = "USER_DEVICE_TOKEN")
     private String userDeviceToken;
+
+    public void saveUserPhoneNumber(String phoneNumber) {
+        this.userPhoneNumber = phoneNumber;
+    }
 }
