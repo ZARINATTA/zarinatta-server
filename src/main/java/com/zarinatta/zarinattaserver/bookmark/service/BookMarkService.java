@@ -1,6 +1,7 @@
 package com.zarinatta.zarinattaserver.bookmark.service;
 
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
+import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkStatusUpdateRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkPageResponse;
 import com.zarinatta.zarinattaserver.bookmark.dto.response.MyBookMarkResponse;
@@ -8,6 +9,7 @@ import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
+import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.BookMarkNotFoundException;
 import com.zarinatta.zarinattaserver.exception.exception.NotFound.TicketNotFoundException;
 import com.zarinatta.zarinattaserver.exception.exception.NotPermit.BookMarkPermitException;
@@ -60,5 +62,12 @@ public class BookMarkService {
                 .totalDataCount(myBookMarkByRequest.getTotalElements())
                 .totalPageCount(myBookMarkByRequest.getTotalPages())
                 .build();
+    }
+
+    @Transactional
+    public BookMarkStatus updateBookMarkStatus(BookMarkStatusUpdateRequest body){
+        BookMark bookMark = bookMarkRepository.findById(body.getBookMarkId())
+                .orElseThrow(() -> new BookMarkNotFoundException("updateBookMarkStatus"));
+        return bookMark.updateStatus(body.getUpdateStatus());
     }
 }
