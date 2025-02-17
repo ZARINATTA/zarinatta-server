@@ -25,8 +25,8 @@ public class AuthController {
     private final JwtService jwtService;
 
     @GetMapping("/redirect")
-    public ResponseEntity<RedirectDto> redirect() throws IOException, InterruptedException {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.redirect2());
+    public ResponseEntity<RedirectDto> redirect(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.redirect2(httpServletRequest));
     }
 
     @GetMapping("/login")
