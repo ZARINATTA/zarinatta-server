@@ -11,6 +11,7 @@ import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
 import com.zarinatta.zarinattaserver.exception.ErrorCode;
 import com.zarinatta.zarinattaserver.user.dto.UserInputDto;
 import com.zarinatta.zarinattaserver.user.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,9 @@ public class AuthService {
     @Value("${KAKAO_REDIRECT_URI}")
     private String REDIRECT_URI;
 
+    @Value("${KAKAO_REDIRECT_URI_LOCAL}")
+    private String REDIRECT_LOCAL_URI;
+
     @Value("${KAKAO_JWT_NONCE}")
     private String nonce;
 
@@ -53,8 +57,12 @@ public class AuthService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public RedirectDto redirect2() throws IOException, InterruptedException {
-        String requestUri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + CLIENT_ID + "&redirect_uri=" + REDIRECT_URI + "&nonce=" + nonce;
+    public RedirectDto redirect2(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
+        String origin = httpServletRequest.getHeader("Origin");
+
+        String redirectOriginUri = origin.startsWith("http://localhost:3000") ? REDIRECT_LOCAL_URI : REDIRECT_URI;
+
+        String requestUri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + CLIENT_ID + "&redirect_uri=" + redirectOriginUri + "&nonce=" + nonce;
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(requestUri))
