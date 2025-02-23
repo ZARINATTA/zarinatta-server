@@ -4,6 +4,7 @@ import com.zarinatta.zarinattaserver.auth.service.JwtService;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
 import com.zarinatta.zarinattaserver.exception.ErrorCode;
+import com.zarinatta.zarinattaserver.user.dto.PhoneNumberRequest;
 import com.zarinatta.zarinattaserver.user.dto.UserInputDto;
 import com.zarinatta.zarinattaserver.user.repository.UserRepository;
 import com.zarinatta.zarinattaserver.user.dto.UserUpdateDto;
@@ -52,4 +53,8 @@ public class UserService {
         return userRepository.findUserEmailById(userId);
     }
 
+    public void saveUserPhoneNumber(User user, PhoneNumberRequest phoneNumber) {
+        user.saveUserPhoneNumber(phoneNumber.getFullPhoneNumber());
+        userRepository.save(user);
+    }
 }
