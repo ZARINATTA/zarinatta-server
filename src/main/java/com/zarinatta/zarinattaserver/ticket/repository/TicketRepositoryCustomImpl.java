@@ -1,6 +1,5 @@
 package com.zarinatta.zarinattaserver.ticket.repository;
 
-import com.querydsl.core.Query;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
