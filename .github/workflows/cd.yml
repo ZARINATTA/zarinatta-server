@@ -37,8 +37,12 @@ jobs:
       - name: Add application.properties
         run: |
           mkdir -p ./src/main/resources
+          touch ./src/main/resources/application.yml
+          touch ./src/main/resources/application-prod.yml
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_PROD_YML }}" > ./src/main/resources/application-prod.yml
+          cat ./src/main/resources/application.yml
+          cat ./src/main/resources/application-prod.yml
 
       # 6. Gradle 빌드 (테스트 제외)
       - name: Build with Gradle
