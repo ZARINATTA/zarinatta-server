@@ -14,4 +14,4 @@ COPY ${JAR_FILE} app.jar
 EXPOSE 8080
 
 # 실행 명령어에 JVM 옵션 추가
-ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar", "--spring.profiles.active=prod"]
