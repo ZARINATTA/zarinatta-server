@@ -74,14 +74,15 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            # 도커 정리 (이미지, 네트워크, 볼륨)
-            sudo docker system prune -a --volumes -f
-            sudo docker volume prune -f
-            sudo docker network prune -f
-            
             # 최신 이미지 배포
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
             sudo docker stop ${{ secrets.DOCKERHUB_IMAGE_NAME }} || true
             sudo docker rm ${{ secrets.DOCKERHUB_IMAGE_NAME }} || true
             sudo docker run -d --name ${{ secrets.DOCKERHUB_IMAGE_NAME }} -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
+            
+            # 도커 정리 (이미지, 네트워크, 볼륨)
+            sudo docker system prune -a --volumes -f
+            sudo docker volume prune -f
+            sudo docker network prune -f
+          
             echo "배포 완료 🎉"
