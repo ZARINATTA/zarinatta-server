@@ -1,6 +1,4 @@
-FROM openjdk:18-alpine
-
-ENV TZ=Asia/Seoul
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /zarinatta-oauth
 
