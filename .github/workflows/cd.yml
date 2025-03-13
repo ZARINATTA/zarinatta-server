@@ -56,7 +56,7 @@ jobs:
       - name: Build docker image
         run: |
           sudo chmod 666 /var/run/docker.sock
-          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest -f ./Dockerfile .
+          sudo docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest -f ./Dockerfile .
 
       # 9. Docker Hub 로그인
       - name: Login to Docker Hub
@@ -67,11 +67,11 @@ jobs:
 
       # 10. Docker 이미지 푸시
       - name: Publish to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
+        run: sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}:latest
 
       # 11. 원격 서버에서 도커 정리 및 배포
       - name: Connect to WAS & Execute Application
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
