@@ -1,9 +1,9 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /zarinatta-oauth
 
 # 인자 설정 - JAR_File
-ARG JAR_FILE=/build/libs/*.jar
+ARG JAR_FILE=/build/libs/*SNAPSHOT.jar
 
 # jar 파일 복제
 COPY ${JAR_FILE} app.jar
@@ -12,4 +12,4 @@ COPY ${JAR_FILE} app.jar
 EXPOSE 8080
 
 # 실행 명령어에 JVM 옵션 추가
-ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-jar", "app.jar"]
