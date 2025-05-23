@@ -42,6 +42,7 @@ dependencies {
 
 	// Database (운영: MySQL, 테스트: H2)
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.h2database:h2'
 	testImplementation 'com.h2database:h2'
 
 	// JWT
