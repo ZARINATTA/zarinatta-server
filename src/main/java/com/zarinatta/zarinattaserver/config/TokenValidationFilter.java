@@ -1,15 +1,13 @@
 package com.zarinatta.zarinattaserver.config;
 
 import com.zarinatta.zarinattaserver.auth.service.JwtService;
-import com.zarinatta.zarinattaserver.exception.exception.ZarinattaException;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -35,9 +33,8 @@ public class TokenValidationFilter extends OncePerRequestFilter {
 
         System.out.println("Starting filter for URI: " + httpRequest.getRequestURI());
 
-        boolean isNotFiltered = httpRequest.getRequestURI().contains("/api/v1/ticket") ||
-                excludeUrls.contains(httpRequest.getRequestURI());
-
+        boolean isNotFiltered = excludeUrls.contains(httpRequest.getRequestURI());
+        log.error(httpRequest.getRequestURI());
         System.out.println("isNotFiltered: " + isNotFiltered);
 
         if (!isNotFiltered && !httpRequest.getMethod().equals("OPTIONS")) {

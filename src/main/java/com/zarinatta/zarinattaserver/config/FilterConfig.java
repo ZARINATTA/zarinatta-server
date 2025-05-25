@@ -15,7 +15,16 @@ public class FilterConfig {
         FilterRegistrationBean<TokenValidationFilter> tokenValidationFilterRegistrationBean = new FilterRegistrationBean<>();
 
         TokenValidationFilter tokenValidationFilter = new TokenValidationFilter(jwtService);
-        tokenValidationFilter.setExcludeUrls(Arrays.asList("/api/v1/auth/redirect", "/api/v1/auth/login", "/api/v1/auth/master", "/api/v1/ticket/search", "/auth/test", "/api/v1/station/search", "/api/v1/station/frequent", "/api/v1/bookmark/search"));
+        tokenValidationFilter.setExcludeUrls(Arrays.asList(
+                "/api/v1/auth/redirect",
+                "/api/v1/auth/login",
+                "/api/v1/auth/master",
+                "/api/v1/ticket/search",
+                "/api/v1/ticket",
+                "/auth/test",
+                "/api/v1/station/search",
+                "/api/v1/station/frequent",
+                "/api/v1/bookmark/search"));
         tokenValidationFilterRegistrationBean.setFilter(tokenValidationFilter);
         tokenValidationFilterRegistrationBean.setOrder(1);
 
