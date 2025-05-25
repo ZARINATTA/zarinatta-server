@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -34,8 +35,11 @@ public class BookMarkController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<MyBookMarkSearchResponse> searchBookMark(HttpServletRequest request, @RequestParam("ticketIds") List<Long> ticketIds) {
-        String accessToken = (String) request.getAttribute("accessToken");
-        User user = jwtService.findUserByToken(accessToken)
+        Optional<Object> accessToken = Optional.ofNullable(request.getAttribute("accessToken"));
+        if (accessToken.isEmpty()) {
+            return List.of();
+        }
+        User user = jwtService.findUserByToken(accessToken.get().toString())
                 .orElseThrow(() -> new UserNotFoundException("searchBookMark"));
         List<BookMark> bookMarks = bookMarkRepository.findAllByTicketIdInAndUserId(ticketIds, user);
         List<MyBookMarkSearchResponse> response = bookMarks.stream()
