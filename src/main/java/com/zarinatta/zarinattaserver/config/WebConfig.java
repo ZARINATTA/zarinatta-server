@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedMethods("*")
-                .allowedOrigins("http://localhost:3000", "https://zarinatta-client.vercel.app/")
+                .allowedOrigins("http://localhost:3000", "https://www.zarinatta.com")
                 .allowedHeaders("*");
     }
 }
