@@ -34,7 +34,6 @@ public class TokenValidationFilter extends OncePerRequestFilter {
         System.out.println("Starting filter for URI: " + httpRequest.getRequestURI());
 
         boolean isNotFiltered = excludeUrls.contains(httpRequest.getRequestURI());
-        log.error(httpRequest.getRequestURI());
         System.out.println("isNotFiltered: " + isNotFiltered);
 
         if (!isNotFiltered && !httpRequest.getMethod().equals("OPTIONS")) {
