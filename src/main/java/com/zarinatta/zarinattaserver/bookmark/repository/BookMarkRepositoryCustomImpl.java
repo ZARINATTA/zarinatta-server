@@ -1,6 +1,8 @@
 package com.zarinatta.zarinattaserver.bookmark.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zarinatta.zarinattaserver.bookmark.dto.request.MyBookMarkRequest;
 import com.zarinatta.zarinattaserver.entity.BookMark;
@@ -51,6 +53,9 @@ public class BookMarkRepositoryCustomImpl implements BookMarkRepositoryCustom {
     }
 
     private BooleanExpression isExpire(Boolean expire) {
-        return expire ? qBookMark.ticket.departTime.lt(LocalDateTime.now().format(formatter)) : qBookMark.ticket.departTime.goe(LocalDateTime.now().format(formatter));
+        StringExpression dateTime = Expressions.stringTemplate("CONCAT({0}, {1})",
+                qBookMark.ticket.departDate,
+                qBookMark.ticket.departTime);
+        return expire ? dateTime.lt(LocalDateTime.now().format(formatter)) : dateTime.goe(LocalDateTime.now().format(formatter));
     }
 }
