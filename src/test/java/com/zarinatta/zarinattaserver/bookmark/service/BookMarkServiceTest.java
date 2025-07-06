@@ -1,11 +1,11 @@
-package com.zarinatta.zarinattaserver.bookmark;
+package com.zarinatta.zarinattaserver.bookmark.service;
 
 import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
 import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
-import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
+import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import com.zarinatta.zarinattaserver.enums.StationCode;
 import com.zarinatta.zarinattaserver.exception.exception.NotPermit.BookMarkPermitException;
@@ -16,18 +16,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@Profile("test")
+@ActiveProfiles("test")
 class BookMarkServiceTest {
 
     @Autowired
@@ -38,17 +38,21 @@ class BookMarkServiceTest {
     private TicketRepository ticketRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @AfterEach
     void tearDown() {
-        bookMarkRepository.deleteAll();
-        ticketRepository.deleteAll();
-        userRepository.deleteAll();
+        bookMarkRepository.deleteAllInBatch();
+        jdbcTemplate.execute("ALTER TABLE book_mark ALTER COLUMN `BOOKMARK_ID` RESTART WITH 1");
+        ticketRepository.deleteAllInBatch();
+        jdbcTemplate.execute("ALTER TABLE ticket ALTER COLUMN `TICKET_ID` RESTART WITH 1");
+        userRepository.deleteAllInBatch();
     }
 
     @Test
-    @DisplayName("기차표를 즐겨찾기에 등록한다.")
-    public void ID가1인유저가_ID가2인티켓을_즐겨찾기에_등록(){
+    @DisplayName("ID=1인 유저가 ID=2인 티켓을 즐겨찾기에 등록한다.")
+    public void createBookMark() {
         //given
         createDummyTicket();
         createDummyUser();
@@ -65,17 +69,18 @@ class BookMarkServiceTest {
 
         //then
         BookMark bookMark = bookMarkRepository.findById(1L).get();
-        assertEquals(bookMark.getTicket().getId(), 2L);
-        assertEquals(bookMark.getUser().getId(), "1");
-        assertEquals(bookMark.isWantFirstClass(), false);
-        assertEquals(bookMark.getWantNormalSeat(), SeatLookingFor.STANDING_SEAT);
-        assertEquals(bookMark.getWantBabySeat(), SeatLookingFor.SEAT);
-        assertEquals(bookMark.isWantWaitingReservation(), true);
+        assertThat(bookMark.getTicket().getId()).isEqualTo(2L);
+        assertThat(bookMark.getUser().getId()).isEqualTo("1");
+        assertThat(bookMark.isWantFirstClass()).isFalse();
+        assertThat(bookMark.getWantNormalSeat()).isEqualTo(SeatLookingFor.STANDING_SEAT);
+        assertThat(bookMark.getWantBabySeat()).isEqualTo(SeatLookingFor.SEAT);
+        assertThat(bookMark.isWantWaitingReservation()).isTrue();
     }
 
     @Test
-    @DisplayName("등록된 즐겨찾기를 삭제한다.")
-    public void ID가1인유저가_ID가2인_본인즐겨찾기_삭제(){
+    @Transactional
+    @DisplayName("ID=1인 유저가 ID=2인 즐겨찾기를 삭제한다.")
+    public void deleteBookMark() {
         //given
         createDummyData();
 
@@ -84,20 +89,20 @@ class BookMarkServiceTest {
 
         //then
         List<BookMark> bookMarks = bookMarkRepository.findAll();
-        assertThat(bookMarks.size()).isEqualTo(2);
-        assertThat(bookMarks.get(0).getTicket().getId()).isEqualTo(1L);
-        assertThat(bookMarks.get(1).getTicket().getId()).isEqualTo(3L);
+        assertThat(bookMarks.size()).isEqualTo(2); // 더미 데이터 3개에서 2개로 감소
+        assertThat(bookMarks.get(0).getId()).isEqualTo(1L);
+        assertThat(bookMarks.get(1).getId()).isEqualTo(3L);
     }
 
     @Test
     @DisplayName("자기 자신의 즐겨찾기만 삭제 할수 있다.")
-    public void ID가2인유저가_ID가2인_다른유저의_즐겨찾기_삭제(){
+    public void ID가2인유저가_ID가2인_다른유저의_즐겨찾기_삭제() {
         //given
         createDummyData();
 
         //when //then
         assertThrows(BookMarkPermitException.class,
-                () -> bookMarkService.deleteBookMark(userRepository.findById("2").get(), 2L));
+                () -> bookMarkService.deleteBookMark(userRepository.findById("2").get(), 3L));
     }
 
     void createDummyData() {
@@ -106,7 +111,6 @@ class BookMarkServiceTest {
         createDummyBookMark();
     }
 
-    @Transactional
     void createDummyTicket() {
         List<Ticket> tickets = Arrays.asList(
                 new Ticket("새마을호 1001", "20240807", "060000", StationCode.부산, "100000", StationCode.수원, "25000원"),
@@ -123,28 +127,32 @@ class BookMarkServiceTest {
         ticketRepository.saveAll(tickets);
     }
 
-    @Transactional
     void createDummyUser() {
         List<User> users = List.of(
                 User.builder()
-                .id("1")
-                .userNick("test")
-                .userEmail("ee@gmail.com")
-                .build(),
+                        .id("1")
+                        .userNick("test")
+                        .userEmail("ee@gmail.com")
+                        .userPhoneNumber("01012345678")
+                        .userDeviceToken(null)
+                        .build(),
                 User.builder()
-                .id("2")
-                .userNick("test2")
-                .userEmail("ee2@gmail.com")
-                .build());
+                        .id("2")
+                        .userNick("test2")
+                        .userEmail("ee2@gmail.com")
+                        .userPhoneNumber("01012345679")
+                        .userDeviceToken(null)
+                        .build());
         userRepository.saveAll(users);
     }
 
-    @Transactional
     void createDummyBookMark() {
         User user = userRepository.findById("1").get();
         List<Ticket> tickets = ticketRepository.findAll();
         List<BookMark> bookMarks = Arrays.asList(
                 BookMark.builder()
+                        .isSent(false)
+                        .status(BookMarkStatus.UNKNOWN)
                         .wantFirstClass(true)
                         .wantNormalSeat(SeatLookingFor.SEAT)
                         .wantBabySeat(SeatLookingFor.SEAT)
@@ -153,6 +161,8 @@ class BookMarkServiceTest {
                         .user(user)
                         .build(),
                 BookMark.builder()
+                        .isSent(false)
+                        .status(BookMarkStatus.SUCCESS)
                         .wantFirstClass(false)
                         .wantNormalSeat(SeatLookingFor.SEAT)
                         .wantBabySeat(SeatLookingFor.SEAT)
@@ -161,6 +171,8 @@ class BookMarkServiceTest {
                         .user(user)
                         .build(),
                 BookMark.builder()
+                        .isSent(false)
+                        .status(BookMarkStatus.FAIL)
                         .wantFirstClass(true)
                         .wantNormalSeat(SeatLookingFor.SEAT)
                         .wantBabySeat(SeatLookingFor.SEAT)
