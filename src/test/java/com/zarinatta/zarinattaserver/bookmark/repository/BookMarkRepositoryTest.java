@@ -1,6 +1,5 @@
-package com.zarinatta.zarinattaserver.bookmark;
+package com.zarinatta.zarinattaserver.bookmark.repository;
 
-import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
