@@ -1,17 +1,13 @@
-package com.zarinatta.zarinattaserver.bookmark;
+package com.zarinatta.zarinattaserver.bookmark.repository;
 
-import com.zarinatta.zarinattaserver.bookmark.dto.request.BookMarkCreateRequest;
-import com.zarinatta.zarinattaserver.bookmark.repository.BookMarkRepository;
-import com.zarinatta.zarinattaserver.bookmark.service.BookMarkService;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import com.zarinatta.zarinattaserver.enums.StationCode;
-import com.zarinatta.zarinattaserver.exception.exception.NotPermit.BookMarkPermitException;
 import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
 import com.zarinatta.zarinattaserver.user.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,82 +18,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @SpringBootTest
 @Profile("test")
-class BookMarkServiceTest {
-
-    @Autowired
-    private BookMarkService bookMarkService;
+class BookMarkRepositoryTest {
     @Autowired
     private BookMarkRepository bookMarkRepository;
     @Autowired
-    private TicketRepository ticketRepository;
-    @Autowired
     private UserRepository userRepository;
-
-    @AfterEach
-    void tearDown() {
-        bookMarkRepository.deleteAll();
-        ticketRepository.deleteAll();
-        userRepository.deleteAll();
-    }
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @Test
-    @DisplayName("기차표를 즐겨찾기에 등록한다.")
-    public void ID가1인유저가_ID가2인티켓을_즐겨찾기에_등록(){
-        //given
-        createDummyTicket();
-        createDummyUser();
-        BookMarkCreateRequest request = BookMarkCreateRequest.builder()
-                .ticketId(2L)
-                .wantFirstClass(false)
-                .wantNormalSeat(SeatLookingFor.STANDING_SEAT)
-                .wantBabySeat(SeatLookingFor.SEAT)
-                .wantWaitingReservation(true)
-                .build();
-
-        //when
-        bookMarkService.createBookMark(userRepository.findById("1").get(), request);
-
-        //then
-        BookMark bookMark = bookMarkRepository.findById(1L).get();
-        assertEquals(bookMark.getTicket().getId(), 2L);
-        assertEquals(bookMark.getUser().getId(), "1");
-        assertEquals(bookMark.isWantFirstClass(), false);
-        assertEquals(bookMark.getWantNormalSeat(), SeatLookingFor.STANDING_SEAT);
-        assertEquals(bookMark.getWantBabySeat(), SeatLookingFor.SEAT);
-        assertEquals(bookMark.isWantWaitingReservation(), true);
-    }
-
-    @Test
-    @DisplayName("등록된 즐겨찾기를 삭제한다.")
-    public void ID가1인유저가_ID가2인_본인즐겨찾기_삭제(){
+    @DisplayName("티켓 Id List와 User Entity를 통해 티켓 id 중에 즐겨 찾기 한 항목을 가져 온다.")
+    public void getBookMarks() {
         //given
         createDummyData();
 
         //when
-        bookMarkService.deleteBookMark(userRepository.findById("1").get(), 2L);
+        List<BookMark> bookMarks = bookMarkRepository.findAllByTicketIdInAndUserId(Arrays.asList(1L, 2L, 3L), userRepository.findById("1").get());
 
         //then
-        List<BookMark> bookMarks = bookMarkRepository.findAll();
-        assertThat(bookMarks.size()).isEqualTo(2);
-        assertThat(bookMarks.get(0).getTicket().getId()).isEqualTo(1L);
-        assertThat(bookMarks.get(1).getTicket().getId()).isEqualTo(3L);
-    }
-
-    @Test
-    @DisplayName("자기 자신의 즐겨찾기만 삭제 할수 있다.")
-    public void ID가2인유저가_ID가2인_다른유저의_즐겨찾기_삭제(){
-        //given
-        createDummyData();
-
-        //when //then
-        assertThrows(BookMarkPermitException.class,
-                () -> bookMarkService.deleteBookMark(userRepository.findById("2").get(), 2L));
+        Assertions.assertEquals(bookMarks.size(), 3);
+        Assertions.assertEquals(bookMarks.get(0).getTicket().getId(), 1L);
     }
 
     void createDummyData() {
@@ -125,18 +67,12 @@ class BookMarkServiceTest {
 
     @Transactional
     void createDummyUser() {
-        List<User> users = List.of(
-                User.builder()
+        User user = User.builder()
                 .id("1")
                 .userNick("test")
                 .userEmail("ee@gmail.com")
-                .build(),
-                User.builder()
-                .id("2")
-                .userNick("test2")
-                .userEmail("ee2@gmail.com")
-                .build());
-        userRepository.saveAll(users);
+                .build();
+        userRepository.save(user);
     }
 
     @Transactional
