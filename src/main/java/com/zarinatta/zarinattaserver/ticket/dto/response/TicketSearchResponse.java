@@ -30,8 +30,8 @@ public class TicketSearchResponse {
         return TicketSearchResponse.builder()
                 .ticketId(ticket.getId())
                 .ticketType(ticket.getTicketType())
-                .departTime(ticket.getDepartTime())
-                .arriveTime(ticket.getArriveTime())
+                .departTime(ticket.getDepartDate() + ticket.getDepartTime() + "0000")
+                .arriveTime(ticket.getDepartDate() + ticket.getArriveTime() + "0000")
                 .departStation(ticket.getDepartStation())
                 .arriveStation(ticket.getArriveStation())
                 .price(ticket.getPrice()).build();
