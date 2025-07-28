@@ -31,14 +31,10 @@ public class TokenValidationFilter extends OncePerRequestFilter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        System.out.println("Starting filter for URI: " + httpRequest.getRequestURI());
-
         boolean isNotFiltered = excludeUrls.contains(httpRequest.getRequestURI());
-        System.out.println("isNotFiltered: " + isNotFiltered);
 
         if (!isNotFiltered && !httpRequest.getMethod().equals("OPTIONS")) {
             log.info("[TokenValidationFilter] Filter is executing");
-
             Cookie[] cookies = httpRequest.getCookies();
             String accessToken = null;
 
@@ -64,9 +60,6 @@ public class TokenValidationFilter extends OncePerRequestFilter {
             httpRequest.setAttribute("userId", userId);
             log.info("[TokenValidationFilter] Access token and userId set in request");
         }
-
-        // 필터 로직이 완료된 후 요청을 계속 진행
-        log.info("Continuing filter chain for URI: " + httpRequest.getRequestURI());
         filterChain.doFilter(httpRequest, httpResponse);
     }
 }
