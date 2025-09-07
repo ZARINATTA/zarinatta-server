@@ -5,46 +5,28 @@ import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import com.zarinatta.zarinattaserver.enums.StationCode;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-public class MyBookMarkResponse {
-    // 티켓 정보
-    private Long ticketId;
-    private String ticketType;
-    private String departDate;
-    private String departTime;
-    private StationCode departStation;
-    private String arriveTime;
-    private StationCode arriveStation;
-    // 즐겨찾기 정보
-    private Long bookmarkId;
-    private boolean wantFirstClass;
-    private SeatLookingFor wantNormalSeat;
-    private SeatLookingFor wantBabySeat;
-    private boolean wantWaitingReservation;
-    //즐겨찾기 상태
-    private BookMarkStatus status;
+@Builder
+public record MyBookMarkResponse(
+        // 티켓 정보
+        Long ticketId,
+        String ticketType,
+        String departDate,
+        String departTime,
+        StationCode departStation,
+        String arriveTime,
+        StationCode arriveStation,
 
-    @Builder
-    public MyBookMarkResponse(Long ticketId, String ticketType, String departDate, String departTime, StationCode departStation, String arriveTime, StationCode arriveStation, Long bookmarkId, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, BookMarkStatus status) {
-        this.ticketId = ticketId;
-        this.ticketType = ticketType;
-        this.departDate = departDate;
-        this.departTime = departTime;
-        this.departStation = departStation;
-        this.arriveTime = arriveTime;
-        this.arriveStation = arriveStation;
-        this.bookmarkId = bookmarkId;
-        this.wantFirstClass = wantFirstClass;
-        this.wantNormalSeat = wantNormalSeat;
-        this.wantBabySeat = wantBabySeat;
-        this.wantWaitingReservation = wantWaitingReservation;
-        this.status = status;
-    }
+        // 즐겨찾기 정보
+        Long bookmarkId,
+        boolean wantFirstClass,
+        SeatLookingFor wantNormalSeat,
+        SeatLookingFor wantBabySeat,
+        boolean wantWaitingReservation,
 
+        // 즐겨찾기 상태
+        BookMarkStatus status
+) {
     public static MyBookMarkResponse from(BookMark bookMark) {
         return MyBookMarkResponse.builder()
                 .ticketId(bookMark.getTicket().getId())

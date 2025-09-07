@@ -24,8 +24,8 @@ public class UserService {
     public String save(UserInputDto userInputDto) {
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
-                .userEmail(userInputDto.getUserEmail())
-                .userNick(userInputDto.getUserNick())
+                .userEmail(userInputDto.userEmail())
+                .userNick(userInputDto.userNick())
                 .build();
 
         return userRepository.save(user).getId();
@@ -38,7 +38,7 @@ public class UserService {
             throw new ZarinattaException(ErrorCode.INVALID_TOKEN_ERROR);
         }
 
-        userRepository.update(userId, userUpdateDto.getUserDeviceToken(), userUpdateDto.getUserPhone());
+        userRepository.update(userId, userUpdateDto.userDeviceToken(), userUpdateDto.userPhone());
     }
 
     public void delete(String userId) {

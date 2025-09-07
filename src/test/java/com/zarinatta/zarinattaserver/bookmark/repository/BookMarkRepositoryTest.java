@@ -3,6 +3,7 @@ package com.zarinatta.zarinattaserver.bookmark.repository;
 import com.zarinatta.zarinattaserver.entity.BookMark;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.entity.User;
+import com.zarinatta.zarinattaserver.enums.BookMarkStatus;
 import com.zarinatta.zarinattaserver.enums.SeatLookingFor;
 import com.zarinatta.zarinattaserver.enums.StationCode;
 import com.zarinatta.zarinattaserver.ticket.repository.TicketRepository;
@@ -71,6 +72,7 @@ class BookMarkRepositoryTest {
                 .id("1")
                 .userNick("test")
                 .userEmail("ee@gmail.com")
+                .userPhoneNumber("01012345678")
                 .build();
         userRepository.save(user);
     }
@@ -86,6 +88,7 @@ class BookMarkRepositoryTest {
                         .wantBabySeat(SeatLookingFor.SEAT)
                         .wantWaitingReservation(false)
                         .ticket(tickets.get(0))
+                        .status(BookMarkStatus.SUCCESS)
                         .user(user)
                         .build(),
                 BookMark.builder()
@@ -94,6 +97,7 @@ class BookMarkRepositoryTest {
                         .wantBabySeat(SeatLookingFor.SEAT)
                         .wantWaitingReservation(true)
                         .ticket(tickets.get(1))
+                        .status(BookMarkStatus.SUCCESS)
                         .user(user)
                         .build(),
                 BookMark.builder()
@@ -102,6 +106,7 @@ class BookMarkRepositoryTest {
                         .wantBabySeat(SeatLookingFor.SEAT)
                         .wantWaitingReservation(true)
                         .ticket(tickets.get(2))
+                        .status(BookMarkStatus.SUCCESS)
                         .user(user)
                         .build()
         );

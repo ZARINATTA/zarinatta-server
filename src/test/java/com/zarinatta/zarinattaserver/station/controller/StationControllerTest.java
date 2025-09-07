@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -50,14 +49,8 @@ public class StationControllerTest {
 
     @Test
     public void findStations() throws Exception {
-        // ReflectionTestUtils를 사용하여 빈 생성 후 필드 주입
-        FrequentStationDto station1 = new FrequentStationDto();
-        ReflectionTestUtils.setField(station1, "section", StationSection.서울_경기);
-        ReflectionTestUtils.setField(station1, "name", "서울역");
-
-        FrequentStationDto station2 = new FrequentStationDto();
-        ReflectionTestUtils.setField(station2, "section", StationSection.경상_부산_대구);
-        ReflectionTestUtils.setField(station2, "name", "부산역");
+        FrequentStationDto station1 = new FrequentStationDto(StationSection.서울_경기, "서울역");
+        FrequentStationDto station2 = new FrequentStationDto(StationSection.경상_부산_대구, "부산역");
 
         List<FrequentStationDto> frequentStations = Arrays.asList(station1, station2);
         List<String> sections = Arrays.asList("A", "B");

@@ -45,12 +45,12 @@ class TicketServiceTest {
         PageTicketResponse result = ticketService.getTicket(ticketSearchRequest, pageable);
 
         //then
-        assertThat(result.getPage()).isEqualTo(1);
-        assertThat(result.getTotalDataCount()).isEqualTo(3);
-        assertThat(result.getTotalPageCount()).isEqualTo(2);
-        assertThat(result.getResponseList().get(0).getTicketType()).contains("새마을호");
-        assertThat(result.getResponseList().get(0).getDepartStation()).isEqualTo(StationCode.부산);
-        assertThat(result.getResponseList().get(0).getArriveStation()).isEqualTo(StationCode.수원);
+        assertThat(result.page()).isEqualTo(1);
+        assertThat(result.totalDataCount()).isEqualTo(3);
+        assertThat(result.totalPageCount()).isEqualTo(2);
+        assertThat(result.responseList().get(0).ticketType()).contains("새마을호");
+        assertThat(result.responseList().get(0).departStation()).isEqualTo(StationCode.부산);
+        assertThat(result.responseList().get(0).arriveStation()).isEqualTo(StationCode.수원);
     }
 
     @Transactional

@@ -128,8 +128,7 @@ class BookMarkControllerTest {
     public void getMyBookMarkList() throws Exception {
         // given
         User dummyUser = User.builder().id("user1").build();
-        MyBookMarkRequest request = new MyBookMarkRequest();
-        request.setExpire(false);
+        MyBookMarkRequest request = new MyBookMarkRequest(false, 1, 10);
         MyBookMarkPageResponse pageResponse = MyBookMarkPageResponse.builder()
                 .responseList(Arrays.asList())
                 .page(1)
@@ -155,9 +154,7 @@ class BookMarkControllerTest {
     public void updateBookMarkState() throws Exception {
         // given
         User dummyUser = User.builder().id("user1").build();
-        BookMarkStatusUpdateRequest request = new BookMarkStatusUpdateRequest();
-        request.setBookMarkId(1L);
-        request.setUpdateStatus(BookMarkStatus.UNKNOWN);
+        BookMarkStatusUpdateRequest request = new BookMarkStatusUpdateRequest(1L, BookMarkStatus.UNKNOWN);
         Mockito.when(jwtService.findUserByToken(accessToken)).thenReturn(Optional.of(dummyUser));
         Mockito.when(bookMarkService.updateBookMarkStatus(any(BookMarkStatusUpdateRequest.class)))
                 .thenReturn(BookMarkStatus.UNKNOWN);

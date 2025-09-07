@@ -59,7 +59,7 @@ public class BookMarkController {
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("createBookMark"));
         bookMarkService.createBookMark(user, bookMarkCreateRequest);
-        return "TicketId: " + bookMarkCreateRequest.getTicketId() + " - 즐겨찾기 추가 완료";
+        return "TicketId: " + bookMarkCreateRequest.ticketId() + " - 즐겨찾기 추가 완료";
     }
 
     @DeleteMapping("/delete/{bookMarkId}")
@@ -87,7 +87,7 @@ public class BookMarkController {
         String accessToken = (String) request.getAttribute("accessToken");
         User user = jwtService.findUserByToken(accessToken)
                 .orElseThrow(() -> new UserNotFoundException("updateBookMarkState"));
-        log.info(user.getUserNick() + "님이 - BookMarkId : " + body.getBookMarkId() + "상태 변경 : " + body.getUpdateStatus());
+        log.info(user.getUserNick() + "님이 - BookMarkId : " + body.bookMarkId() + "상태 변경 : " + body.updateStatus());
         return bookMarkService.updateBookMarkStatus(body);
     }
 }

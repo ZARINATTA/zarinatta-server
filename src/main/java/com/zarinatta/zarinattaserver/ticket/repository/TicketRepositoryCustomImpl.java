@@ -33,11 +33,11 @@ public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
     public Page<Ticket> findTicketBySearchDTO(TicketSearchRequest ticketSearchRequest, Pageable pageable) {
         List<Ticket> tickets = queryFactory
                 .selectFrom(ticket)
-                .where(ticket.departStation.eq(ticketSearchRequest.getDepartStation()),
-                        ticket.arriveStation.eq(ticketSearchRequest.getArriveStation()),
-                        ticket.departDate.eq(ticketSearchRequest.getDepartDate()),
-                        ticket.departTime.goe(ticketSearchRequest.getDepartTime()),
-                        ticketTypeEq(ticketSearchRequest.getTrainType()))
+                .where(ticket.departStation.eq(ticketSearchRequest.departStation()),
+                        ticket.arriveStation.eq(ticketSearchRequest.arriveStation()),
+                        ticket.departDate.eq(ticketSearchRequest.departDate()),
+                        ticket.departTime.goe(ticketSearchRequest.departTime()),
+                        ticketTypeEq(ticketSearchRequest.trainType()))
                 .orderBy(ticket.departTime.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -51,11 +51,11 @@ public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
         Long count = queryFactory
                 .select(ticket.count())
                 .from(ticket)
-                .where(ticket.departStation.eq(ticketSearchRequest.getDepartStation()),
-                        ticket.arriveStation.eq(ticketSearchRequest.getArriveStation()),
-                        ticket.departDate.eq(ticketSearchRequest.getDepartDate()),
-                        ticket.departTime.goe(ticketSearchRequest.getDepartTime()),
-                        ticketTypeEq(ticketSearchRequest.getTrainType()))
+                .where(ticket.departStation.eq(ticketSearchRequest.departStation()),
+                        ticket.arriveStation.eq(ticketSearchRequest.arriveStation()),
+                        ticket.departDate.eq(ticketSearchRequest.departDate()),
+                        ticket.departTime.goe(ticketSearchRequest.departTime()),
+                        ticketTypeEq(ticketSearchRequest.trainType()))
                 .fetchOne();
         return count;
     }
