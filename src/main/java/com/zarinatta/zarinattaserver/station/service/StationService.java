@@ -29,8 +29,6 @@ public class StationService {
             .toList();
 
     public List<String> searchKeyword(String keyword) {
-        log.info("[--- keyword: "+keyword+" ----]");
-        log.info("[--- list 1nd value: "+entireStations.get(0)+" ---]");
         return entireStations.stream().filter(name -> name.contains(keyword)).toList();
     }
 
@@ -39,11 +37,8 @@ public class StationService {
         return FrequentStationAndSectionDto.builder().stations(list).sections(entireStationSections).build();
     }
 
+    @Transactional
     public void updateCount(List<String> nameList) {
-        for(String name : nameList) {
-            log.error("[updateCount] name is not valid station name");
-        }
-
         stationRepository.updateCount(nameList);
     }
 }

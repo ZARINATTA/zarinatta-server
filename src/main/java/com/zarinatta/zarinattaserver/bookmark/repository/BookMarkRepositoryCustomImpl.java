@@ -33,12 +33,12 @@ public class BookMarkRepositoryCustomImpl implements BookMarkRepositoryCustom {
         List<BookMark> bookMarks = queryFactory
                 .selectFrom(qBookMark)
                 .where(qBookMark.user.eq(user),
-                        isExpire(myBookMarkRequest.getExpire()))
+                        isExpire(myBookMarkRequest.expire()))
                 .join(qBookMark.ticket).fetchJoin()
-                .offset(myBookMarkRequest.getPage() * myBookMarkRequest.getSize())
-                .limit(myBookMarkRequest.getSize())
+                .offset(myBookMarkRequest.page() * myBookMarkRequest.size())
+                .limit(myBookMarkRequest.size())
                 .fetch();
-        Pageable pageable = PageRequest.of(myBookMarkRequest.getPage(), myBookMarkRequest.getSize());
+        Pageable pageable = PageRequest.of(myBookMarkRequest.page(), myBookMarkRequest.size());
         return new PageImpl<>(bookMarks, pageable, countAll(user, myBookMarkRequest));
     }
 
@@ -47,7 +47,7 @@ public class BookMarkRepositoryCustomImpl implements BookMarkRepositoryCustom {
                 .select(qBookMark.count())
                 .from(qBookMark)
                 .where(qBookMark.user.eq(user),
-                        isExpire(myBookMarkRequest.getExpire()))
+                        isExpire(myBookMarkRequest.expire()))
                 .fetchOne();
         return count;
     }

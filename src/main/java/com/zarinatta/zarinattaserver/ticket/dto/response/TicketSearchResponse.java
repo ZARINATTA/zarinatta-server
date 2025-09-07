@@ -1,31 +1,19 @@
 package com.zarinatta.zarinattaserver.ticket.dto.response;
 
-import lombok.Builder;
-import lombok.Data;
 import com.zarinatta.zarinattaserver.entity.Ticket;
 import com.zarinatta.zarinattaserver.enums.StationCode;
+import lombok.Builder;
 
-@Data
-public class TicketSearchResponse {
-    private Long ticketId;
-    private String ticketType;
-    private String departTime;
-    private String arriveTime;
-    private StationCode departStation;
-    private StationCode arriveStation;
-    private String price;
-
-    @Builder
-    public TicketSearchResponse(Long ticketId, String ticketType, String departTime, String arriveTime, StationCode departStation, StationCode arriveStation, String price) {
-        this.ticketId = ticketId;
-        this.ticketType = ticketType;
-        this.departTime = departTime;
-        this.arriveTime = arriveTime;
-        this.departStation = departStation;
-        this.arriveStation = arriveStation;
-        this.price = price;
-    }
-
+@Builder
+public record TicketSearchResponse(
+        Long ticketId,
+        String ticketType,
+        String departTime,
+        String arriveTime,
+        StationCode departStation,
+        StationCode arriveStation,
+        String price
+) {
     public static TicketSearchResponse fromEntity(Ticket ticket) {
         return TicketSearchResponse.builder()
                 .ticketId(ticket.getId())

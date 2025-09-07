@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional // getTicket에 역별 검색 수 세기 위한 update문 추가로 readOnly = true 제외
+@Transactional(readOnly = true)
 public class TicketService {
 
     private final TicketRepository ticketRepository;
@@ -27,11 +27,11 @@ public class TicketService {
     private final StationService stationService;
 
     public PageTicketResponse getTicket(TicketSearchRequest searchRequest, Pageable pageable) {
-        String arriveStation = searchRequest.getArriveStation().name();
-        String departStation = searchRequest.getDepartStation().name();
+        String arriveStation = searchRequest.arriveStation().name();
+        String departStation = searchRequest.departStation().name();
 
         List<String> stationNameList = List.of(arriveStation, departStation);
-        stationService.updateCount(stationNameList);
+        //stationService.updateCount(stationNameList);
 
         Page<Ticket> ticketBySearchDTO = ticketRepository.findTicketBySearchDTO(searchRequest, pageable);
 
