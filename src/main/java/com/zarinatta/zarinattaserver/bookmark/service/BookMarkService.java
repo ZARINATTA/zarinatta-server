@@ -34,7 +34,7 @@ public class BookMarkService {
 
     @Transactional
     public void createBookMark(User user, BookMarkCreateRequest bookMarkCreateRequest) {
-        Ticket ticket = ticketRepository.findById(bookMarkCreateRequest.getTicketId())
+        Ticket ticket = ticketRepository.findById(bookMarkCreateRequest.ticketId())
                 .orElseThrow(() -> new TicketNotFoundException("createBookMark"));
         BookMark bookMark = BookMark.from(bookMarkCreateRequest, ticket, user);
         bookMarkRepository.save(bookMark);
@@ -66,8 +66,8 @@ public class BookMarkService {
 
     @Transactional
     public BookMarkStatus updateBookMarkStatus(BookMarkStatusUpdateRequest body){
-        BookMark bookMark = bookMarkRepository.findById(body.getBookMarkId())
+        BookMark bookMark = bookMarkRepository.findById(body.bookMarkId())
                 .orElseThrow(() -> new BookMarkNotFoundException("updateBookMarkStatus"));
-        return bookMark.updateStatus(body.getUpdateStatus());
+        return bookMark.updateStatus(body.updateStatus());
     }
 }
