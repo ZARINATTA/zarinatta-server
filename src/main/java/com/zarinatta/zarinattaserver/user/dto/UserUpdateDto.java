@@ -1,16 +1,10 @@
 package com.zarinatta.zarinattaserver.user.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserUpdateDto {
-    String userDeviceToken;
-
-    String userPhone;
+public record UserUpdateDto(
+        String userDeviceToken,
+        String userPhone
+) {
 }
