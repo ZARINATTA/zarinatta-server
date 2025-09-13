@@ -33,7 +33,7 @@ public class AuthController {
     public ResponseEntity<Map<String, String>> signup(@RequestParam String code) throws Exception {
         TokenResponseDto tokenResponseDto = authService.signup2(code);
 
-        ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.getAccessToken())
+        ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.accessToken())
                 .path("/")
                 .sameSite("None")
                 .httpOnly(false)
@@ -43,7 +43,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Set-Cookie", accessTokenCookie.toString())
-                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken(), "userEmail", tokenResponseDto.getUserEmail(), "userNick", tokenResponseDto.getUserNick()));
+                .body(Map.of("refreshToken", tokenResponseDto.refreshToken(), "userEmail", tokenResponseDto.userEmail(), "userNick", tokenResponseDto.userNick()));
     }
 
     @PostMapping("/authorize")
@@ -53,7 +53,7 @@ public class AuthController {
 
         TokenResponseDto tokenResponseDto = authService.authorize(accessToken, refreshToken);
 
-        ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.getAccessToken())
+        ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.accessToken())
                 .path("/")
                 .sameSite("None")
                 .httpOnly(false)
@@ -63,7 +63,7 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("Set-Cookie", accessTokenCookie.toString())
-                .body(Map.of("refreshToken", tokenResponseDto.getRefreshToken()));
+                .body(Map.of("refreshToken", tokenResponseDto.refreshToken()));
     }
 
     @PostMapping("/logout")
@@ -91,7 +91,7 @@ public class AuthController {
 
         MasterTokenDto masterTokenDto = jwtService.createMasterToken();
 
-        ResponseCookie cookie = ResponseCookie.from("skt", masterTokenDto.getAccessToken())
+        ResponseCookie cookie = ResponseCookie.from("skt", masterTokenDto.accessToken())
                 .maxAge(-1) // 쿠키 만료 시간 설정
                 .path("/") // 쿠키의 경로 설정
                 .httpOnly(true) // 보안 설정
@@ -100,8 +100,8 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("Set-Cookie", masterTokenDto.getAccessToken())
-                .body(Map.of("refreshToken", masterTokenDto.getRefreshToken()));
+                .header("Set-Cookie", masterTokenDto.accessToken())
+                .body(Map.of("refreshToken", masterTokenDto.refreshToken()));
     }
 
     @GetMapping("/test")

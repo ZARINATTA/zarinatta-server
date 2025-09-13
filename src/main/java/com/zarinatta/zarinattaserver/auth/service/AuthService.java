@@ -118,7 +118,7 @@ public class AuthService {
 
         request = HttpRequest.newBuilder()
                 .uri(URI.create(getUserInfoUri))
-                .header("Authorization", "Bearer " + loginDto.getAccess_token())
+                .header("Authorization", "Bearer " + loginDto.access_token())
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .POST(HttpRequest.BodyPublishers.noBody()) // 빈 본문을 전송 (폼 데이터가 필요 없는 경우)
                 .build();
@@ -135,8 +135,8 @@ public class AuthService {
 
         log.info("------------------[KakaoProfileDto Get]------------------");
 
-        String email = kakaoProfileDto.getKakao_account().getEmail();
-        String nickname = kakaoProfileDto.getKakao_account().getProfile().getNickname();
+        String email = kakaoProfileDto.kakao_account().email();
+        String nickname = kakaoProfileDto.kakao_account().profile().nickname();
 
         String userId = userService.findUserIdByEmail(email);
 
