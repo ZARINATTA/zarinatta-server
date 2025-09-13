@@ -15,8 +15,6 @@ public record TicketSearchRequest(
         @NotBlank(message = "출발 날짜 입력 필수")
         @Pattern(regexp = "^\\d{8}$", message = "날짜 값은 'YYYYMMDD' 형식이어야 합니다.")
         String departDate,
-        @NotBlank(message = "출발 시간 입력 필수")
-        @Pattern(regexp = "^\\d{4}$", message = "시간 값은 'HHMM' 형식이어야 합니다.")
         String departTime,
         String trainType
 ) {
