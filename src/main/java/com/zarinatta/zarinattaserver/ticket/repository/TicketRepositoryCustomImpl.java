@@ -36,7 +36,7 @@ public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
                 .where(ticket.departStation.eq(ticketSearchRequest.departStation()),
                         ticket.arriveStation.eq(ticketSearchRequest.arriveStation()),
                         ticket.departDate.eq(ticketSearchRequest.departDate()),
-                        ticket.departTime.goe(ticketSearchRequest.departTime()),
+                        departTimeEq(ticketSearchRequest.departTime()),
                         ticketTypeEq(ticketSearchRequest.trainType()))
                 .orderBy(ticket.departTime.asc())
                 .offset(pageable.getOffset())
@@ -54,7 +54,7 @@ public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
                 .where(ticket.departStation.eq(ticketSearchRequest.departStation()),
                         ticket.arriveStation.eq(ticketSearchRequest.arriveStation()),
                         ticket.departDate.eq(ticketSearchRequest.departDate()),
-                        ticket.departTime.goe(ticketSearchRequest.departTime()),
+                        departTimeEq(ticketSearchRequest.departTime()),
                         ticketTypeEq(ticketSearchRequest.trainType()))
                 .fetchOne();
         return count;
@@ -84,6 +84,10 @@ public class TicketRepositoryCustomImpl implements TicketRepositoryCustom {
                 "    (REPLACE(CONCAT(CURDATE(), '230000'), '-', ''), 'KTX-이음 1515', REPLACE(CURDATE(), '-', ''), REPLACE(CONCAT(CURDATE(), '230000'), '-', ''), '서울', REPLACE(CONCAT(CURDATE(), '234500'), '-', ''), '부산', '30000원');\n";
 
         entityManager.createNativeQuery(nativeQuery).executeUpdate();
+    }
+
+    private BooleanExpression departTimeEq(String departTime) {
+        return (departTime != null) ? ticket.departTime.goe(departTime) : null;
     }
 
     private BooleanExpression ticketTypeEq(String trainType) {
