@@ -8,6 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record MyBookMarkResponse(
+        
         // 티켓 정보
         Long ticketId,
         String ticketType,
