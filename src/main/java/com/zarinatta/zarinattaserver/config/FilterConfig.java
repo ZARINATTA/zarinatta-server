@@ -25,7 +25,8 @@ public class FilterConfig {
                 "/api/v1/station/search",
                 "/api/v1/station/frequent",
                 "/api/v1/bookmark/search",
-                "/actuator/prometheus"));
+                "/actuator/prometheus",
+                "/actuator/health"));
         tokenValidationFilterRegistrationBean.setFilter(tokenValidationFilter);
         tokenValidationFilterRegistrationBean.setOrder(1);
 
