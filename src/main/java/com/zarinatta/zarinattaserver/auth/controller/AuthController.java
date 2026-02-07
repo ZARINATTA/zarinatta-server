@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.Map;
 
+import static java.time.Duration.*;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -29,6 +31,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(authService.redirect2(httpServletRequest));
     }
 
+    /**
+     * Kakao 로그인
+     */
     @GetMapping("/login")
     public ResponseEntity<Map<String, String>> signup(@RequestParam String code) throws Exception {
         TokenResponseDto tokenResponseDto = authService.signup2(code);
@@ -36,9 +41,9 @@ public class AuthController {
         ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.getAccessToken())
                 .path("/")
                 .sameSite("None")
-                .httpOnly(false)
+                .httpOnly(true)
                 .secure(true)
-                .maxAge(30 * 60L)
+                .maxAge(ofMinutes(30))
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -56,9 +61,9 @@ public class AuthController {
         ResponseCookie accessTokenCookie = ResponseCookie.from("skt", tokenResponseDto.getAccessToken())
                 .path("/")
                 .sameSite("None")
-                .httpOnly(false)
+                .httpOnly(true)
                 .secure(true)
-                .maxAge(30 * 60L)
+                .maxAge(ofMinutes(30))
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
