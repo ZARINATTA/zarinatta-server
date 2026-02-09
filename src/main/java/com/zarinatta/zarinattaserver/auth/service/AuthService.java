@@ -60,7 +60,7 @@ public class AuthService {
     public RedirectDto redirect2(HttpServletRequest httpServletRequest) throws IOException, InterruptedException {
         String origin = httpServletRequest.getHeader("Origin");
 
-        String redirectOriginUri = origin.startsWith("http://localhost:3000") ? REDIRECT_LOCAL_URI : REDIRECT_URI;
+        String redirectOriginUri = origin.startsWith("http://localhost:") ? REDIRECT_LOCAL_URI : REDIRECT_URI;
 
         String requestUri = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + CLIENT_ID + "&redirect_uri=" + redirectOriginUri + "&nonce=" + nonce;
 
