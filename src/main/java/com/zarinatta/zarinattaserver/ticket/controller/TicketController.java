@@ -29,4 +29,8 @@ public class TicketController {
     public void insertData() {
         ticketService.insertMockData();
     }
+
+    @GetMapping("/sentry/test")
+    public void test() {
+        throw new RuntimeException("sentry 예외 테스트 - 시간 : " + System.currentTimeMillis());}
 }
