@@ -45,7 +45,7 @@ public class AuthService {
     @Value("${KAKAO_JWT_NONCE}")
     private String nonce;
 
-    private final static long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L; //7일
+    private final static long REFRESH_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     private final UserService userService;
 
