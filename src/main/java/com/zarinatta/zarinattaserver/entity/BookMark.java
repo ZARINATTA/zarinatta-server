@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -42,6 +43,12 @@ public class BookMark {
     @Column(name = "WANT_WAITING_RESERVATION", columnDefinition = "BOOLEAN DEFAULT FALSE", nullable = false)
     private boolean wantWaitingReservation;
 
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "IS_DELETED", columnDefinition = "BOOLEAN DEFAULT FALSE", nullable = false)
+    private boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TICKET_ID", nullable = false)
     private Ticket ticket;
@@ -51,13 +58,15 @@ public class BookMark {
     private User user;
 
     @Builder
-    public BookMark(boolean isSent, BookMarkStatus status, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, Ticket ticket, User user) {
+    public BookMark(boolean isSent, BookMarkStatus status, boolean wantFirstClass, SeatLookingFor wantNormalSeat, SeatLookingFor wantBabySeat, boolean wantWaitingReservation, LocalDateTime createdAt, Boolean isDeleted, Ticket ticket, User user) {
         this.isSent = isSent;
         this.status = status;
         this.wantFirstClass = wantFirstClass;
         this.wantNormalSeat = wantNormalSeat;
         this.wantBabySeat = wantBabySeat;
         this.wantWaitingReservation = wantWaitingReservation;
+        this.createdAt = createdAt;
+        this.isDeleted = isDeleted;
         this.ticket = ticket;
         this.user = user;
     }
@@ -70,6 +79,8 @@ public class BookMark {
                 .wantNormalSeat(request.wantNormalSeat())
                 .wantBabySeat(request.wantBabySeat())
                 .wantWaitingReservation(request.wantWaitingReservation())
+                .createdAt(LocalDateTime.now())
+                .isDeleted(false)
                 .ticket(ticket)
                 .user(user)
                 .build();
@@ -79,5 +90,9 @@ public class BookMark {
     public BookMarkStatus updateStatus(BookMarkStatus bookMarkStatus) {
         this.status = bookMarkStatus;
         return this.status;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

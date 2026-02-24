@@ -32,7 +32,7 @@ public class BookMarkRepositoryCustomImpl implements BookMarkRepositoryCustom {
     public Page<BookMark> findMyBookMarkByRequest(User user, MyBookMarkRequest myBookMarkRequest) {
         List<BookMark> bookMarks = queryFactory
                 .selectFrom(qBookMark)
-                .where(qBookMark.user.eq(user),
+                .where(qBookMark.user.eq(user), qBookMark.isDeleted.isFalse(),
                         isExpire(myBookMarkRequest.expire()))
                 .join(qBookMark.ticket).fetchJoin()
                 .offset(myBookMarkRequest.page() * myBookMarkRequest.size())

@@ -20,6 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,14 +35,31 @@ public class BookMarkService {
     private final BookMarkRepository bookMarkRepository;
     private final TicketRepository ticketRepository;
 
+    /**
+     * 즐겨찾기 생성 - 하루 최대 3개까지 가능
+     * @param user
+     * @param bookMarkCreateRequest
+     */
     @Transactional
     public void createBookMark(User user, BookMarkCreateRequest bookMarkCreateRequest) {
         Ticket ticket = ticketRepository.findById(bookMarkCreateRequest.ticketId())
                 .orElseThrow(() -> new TicketNotFoundException("createBookMark"));
+        LocalDate targetDate = LocalDate.now();
+        LocalDateTime start = targetDate.atStartOfDay();
+        LocalDateTime end = targetDate.atTime(LocalTime.MAX);
+        List<BookMark> todayUserBookMarked = bookMarkRepository.findByUserAndCreatedToday(user, start, end);
+        if (todayUserBookMarked.size() >= 3) {
+            throw new BookMarkPermitException("createBookMark", "최대 하루에 3개까지 즐겨찾기가 가능합니다 :)");
+        }
         BookMark bookMark = BookMark.from(bookMarkCreateRequest, ticket, user);
         bookMarkRepository.save(bookMark);
     }
 
+    /**
+     * 즐겨찾기 삭제 - soft delete
+     * @param user
+     * @param bookMarkId
+     */
     @Transactional
     public void deleteBookMark(User user, Long bookMarkId) {
         BookMark bookMark = bookMarkRepository.findById(bookMarkId)
@@ -47,9 +67,12 @@ public class BookMarkService {
         if (!bookMark.getUser().getId().equals(user.getId())) {
             throw new BookMarkPermitException("deleteBookMark", "userID : " + user.getId() + " - bookMarkID : " + bookMark.getId() + " 삭제 불가");
         }
-        bookMarkRepository.delete(bookMark);
+        bookMark.delete();
     }
 
+    /**
+     * 즐겨찾기 조회 - 내 즐겨찾기 탭
+     */
     public MyBookMarkPageResponse getMyBookMark(User user, MyBookMarkRequest myBookMarkRequest) {
         Page<BookMark> myBookMarkByRequest = bookMarkRepository.findMyBookMarkByRequest(user, myBookMarkRequest);
         List<MyBookMarkResponse> content = myBookMarkByRequest.getContent().stream()
@@ -64,6 +87,11 @@ public class BookMarkService {
                 .build();
     }
 
+    /**
+     * 즐겨찾기 상태 업데이트 - SUCCESS, FAIL, UNKNOWN
+     * @param body
+     * @return
+     */
     @Transactional
     public BookMarkStatus updateBookMarkStatus(BookMarkStatusUpdateRequest body){
         BookMark bookMark = bookMarkRepository.findById(body.bookMarkId())
