@@ -90,4 +90,11 @@ public class BookMarkController {
         log.info(user.getUserNick() + "님이 - BookMarkId : " + body.bookMarkId() + "상태 변경 : " + body.updateStatus());
         return bookMarkService.updateBookMarkStatus(body);
     }
+
+    @GetMapping("/test")
+    @ResponseStatus(HttpStatus.OK)
+    public String test() throws InterruptedException {
+        Thread.sleep(1000); // 1초 대기
+        return "Ok";
+    }
 }
